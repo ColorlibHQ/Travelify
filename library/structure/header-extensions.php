@@ -6,19 +6,6 @@
 
 /****************************************************************************************/
 
-add_action( 'wp_head', 'travelify_add_meta', 5 );
-/**
- * Add meta tags.
- */
-function travelify_add_meta() {
-?>
-<meta charset="<?php bloginfo( 'charset' ); ?>" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<?php
-}
-
-/****************************************************************************************/
-
 add_action( 'travelify_links', 'travelify_add_links', 10 );
 /**
  * Adding link to stylesheet file
@@ -26,10 +13,28 @@ add_action( 'travelify_links', 'travelify_add_links', 10 );
  * @uses get_stylesheet_uri()
  */
 function travelify_add_links() {
-?>
-	<link rel="profile" href="http://gmpg.org/xfn/11" />
-	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
-<?php
+	?>
+	<link rel="profile" href="https://gmpg.org/xfn/11" />
+	<?php
+	// Only advertise the endpoint when pingbacks are actually accepted.
+	if ( is_singular() && pings_open() ) {
+		printf( '<link rel="pingback" href="%s" />' . "\n", esc_url( get_bloginfo( 'pingback_url' ) ) );
+	}
+}
+
+/****************************************************************************************/
+
+add_action( 'wp_head', 'travelify_no_js_class', 0 );
+/**
+ * Swap the no-js body class for js as early as possible.
+ *
+ * Printed from a hook rather than hardcoded in header.php so child themes and
+ * plugins can remove it.
+ */
+function travelify_no_js_class() {
+	?>
+	<script>document.documentElement.className = document.documentElement.className.replace( /\bno-js\b/, 'js' );</script>
+	<?php
 }
 
 /****************************************************************************************/
@@ -82,30 +87,49 @@ function travelify_headerdetails() {
 					<section class="hgroup-right">
 						<?php travelify_socialnetworks( $flag ); ?>
 					</section><!-- .hgroup-right -->
-				<hgroup id="site-logo" class="clearfix">
+				<div id="site-logo" class="clearfix">
 					<?php
-						if( $options[ 'header_show' ] != 'disable-both' && $options[ 'header_show' ] == 'header-text' ) {
-						?>
-							<h1 id="site-title">
-								<a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
-									<?php bloginfo( 'name' ); ?>
-								</a>
-							</h1>
-							<h2 id="site-description"><?php bloginfo( 'description' ); ?></h2>
-						<?php
-						}
-						elseif( $options[ 'header_show' ] != 'disable-both' && $options[ 'header_show' ] == 'header-logo' ) {
-						?>
-							<h1 id="site-title">
-								<a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
-									<img src="<?php echo esc_url( $options['header_logo'] ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>">
-								</a>
-							</h1>
-						<?php
-						}
-						?>
+					/*
+					 * Only the front page gets an <h1> here; on every other view
+					 * the entry title is the page heading.
+					 */
+					$travelify_title_tag = ( is_home() || is_front_page() ) ? 'h1' : 'p';
 
-				</hgroup><!-- #site-logo -->
+					if ( 'header-text' === $options['header_show'] ) {
+						printf(
+							'<%1$s id="site-title"><a href="%2$s" title="%3$s" rel="home">%4$s</a></%1$s>',
+							esc_attr( $travelify_title_tag ),
+							esc_url( home_url( '/' ) ),
+							esc_attr( get_bloginfo( 'name', 'display' ) ),
+							esc_html( get_bloginfo( 'name', 'display' ) )
+						);
+
+						$travelify_description = get_bloginfo( 'description', 'display' );
+
+						if ( $travelify_description || is_customize_preview() ) {
+							echo '<p id="site-description">' . esc_html( $travelify_description ) . '</p>';
+						}
+					} elseif ( 'header-logo' === $options['header_show'] ) {
+						echo '<' . esc_attr( $travelify_title_tag ) . ' id="site-title">';
+
+						if ( has_custom_logo() ) {
+							// Core handles srcset, sizing and the Customizer preview.
+							the_custom_logo();
+						} elseif ( ! empty( $options['header_logo'] ) ) {
+							// Fallback for installs whose old option URL had no matching attachment.
+							printf(
+								'<a href="%1$s" title="%2$s" rel="home"><img src="%3$s" alt="%2$s"></a>',
+								esc_url( home_url( '/' ) ),
+								esc_attr( get_bloginfo( 'name', 'display' ) ),
+								esc_url( $options['header_logo'] )
+							);
+						}
+
+						echo '</' . esc_attr( $travelify_title_tag ) . '>';
+					}
+					?>
+
+				</div><!-- #site-logo -->
 
 		</div><!-- .hgroup-wrap -->
 	</div><!-- .container -->
@@ -158,7 +182,7 @@ function travelify_headerdetails() {
 		    		if( function_exists( 'travelify_breadcrumb' ) )
 						travelify_breadcrumb();
 					?>
-				   <h3 class="page-title"><?php echo esc_html( travelify_header_title() ); ?></h3><!-- .page-title -->
+				   <h1 class="page-title"><?php echo esc_html( travelify_header_title() ); ?></h1><!-- .page-title -->
 				</div>
 	    	</div>
 	   <?php
@@ -236,54 +260,70 @@ function travelify_featured_post_slider() {
 	$slides = isset( $options['featured_post_slider'] ) && is_array( $options['featured_post_slider'] ) ? array_filter( array_map( 'absint', $options['featured_post_slider'] ) ) : array();
 
 	if ( ! empty( $slides ) ) {
-		$travelify_featured_post_slider .= '
-		<section class="featured-slider"><div class="slider-cycle">';
-			$get_featured_posts = new WP_Query( array(
-				'posts_per_page'      => absint( $options['slider_quantity'] ),
-				'post_type'           => array( 'post', 'page' ),
-				'post__in'            => $slides,
-				'orderby'             => 'post__in',
-				'suppress_filters'    => false,
-				'ignore_sticky_posts' => 1, // ignore sticky posts
-			));
-			$i = 0;
+		$get_featured_posts = new WP_Query( array(
+			'posts_per_page'      => absint( $options['slider_quantity'] ),
+			'post_type'           => array( 'post', 'page' ),
+			'post__in'            => $slides,
+			'orderby'             => 'post__in',
+			'suppress_filters'    => false,
+			'ignore_sticky_posts' => 1, // ignore sticky posts
+		));
+
+		$travelify_slides_markup = '';
+		$i                       = 0;
+
 			while ( $get_featured_posts->have_posts() ) :
 				$get_featured_posts->the_post();
+
+				/*
+				 * The featured image is what a slide is; .featured-text is
+				 * positioned over it. Without one the slide has no height at
+				 * all, so skip it rather than cycle through a blank pane.
+				 */
+				if ( ! has_post_thumbnail() ) {
+					continue;
+				}
+
 				$i++;
 
 				$title_attribute = get_the_title( $post->ID );
 				$excerpt         = get_the_excerpt();
 				$classes         = ( 1 === $i ) ? 'slides displayblock' : 'slides displaynone';
 
-				$travelify_featured_post_slider .= '
+				$travelify_slides_markup .= '
 				<div class="' . esc_attr( $classes ) . '">';
-						if ( has_post_thumbnail() ) {
 
-							$travelify_featured_post_slider .= '<figure><a href="' . esc_url( get_permalink() ) . '" title="' . esc_attr( $title_attribute ) . '">';
+						$travelify_slides_markup .= '<figure><a href="' . esc_url( get_permalink() ) . '" title="' . esc_attr( $title_attribute ) . '">';
 
-							$travelify_featured_post_slider .= get_the_post_thumbnail( $post->ID, 'travelify-slider', array( 'alt' => esc_attr( $title_attribute ), 'class' => 'pngfix' ) ) . '</a></figure>';
-						}
+						$travelify_slides_markup .= get_the_post_thumbnail( $post->ID, 'travelify-slider', array( 'alt' => esc_attr( $title_attribute ), 'class' => 'pngfix' ) ) . '</a></figure>';
+
 						if ( '' !== $title_attribute || '' !== $excerpt ) {
-							$travelify_featured_post_slider .= '
+							$travelify_slides_markup .= '
 							<article class="featured-text">';
 							if ( '' !== $title_attribute ) {
-								$travelify_featured_post_slider .= '<div class="featured-title"><a href="' . esc_url( get_permalink() ) . '" title="' . esc_attr( $title_attribute ) . '">' . esc_html( get_the_title() ) . '</a></div><!-- .featured-title -->';
+								$travelify_slides_markup .= '<div class="featured-title"><a href="' . esc_url( get_permalink() ) . '" title="' . esc_attr( $title_attribute ) . '">' . esc_html( get_the_title() ) . '</a></div><!-- .featured-title -->';
 							}
 							if ( '' !== $excerpt ) {
-								$travelify_featured_post_slider .= '<div class="featured-content">' . wp_kses_post( $excerpt ) . '</div><!-- .featured-content -->';
+								$travelify_slides_markup .= '<div class="featured-content">' . wp_kses_post( $excerpt ) . '</div><!-- .featured-content -->';
 							}
-							$travelify_featured_post_slider .= '
+							$travelify_slides_markup .= '
 							</article><!-- .featured-text -->';
 						}
-				$travelify_featured_post_slider .= '
+				$travelify_slides_markup .= '
 				</div><!-- .slides -->';
 			endwhile;
 			wp_reset_postdata();
-		$travelify_featured_post_slider .= '</div>
+
+		// Nothing renderable: emit no markup at all rather than an empty shell.
+		if ( '' !== $travelify_slides_markup ) {
+			$travelify_featured_post_slider = '
+		<section class="featured-slider"><div class="slider-cycle">'
+				. $travelify_slides_markup . '</div>
 		<nav id="controllers" class="clearfix">
 		</nav><!-- #controllers --></section><!-- .featured-slider -->';
+		}
 	}
-	echo $travelify_featured_post_slider;
+	echo $travelify_featured_post_slider; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped as it is built.
 }
 endif;
 
@@ -315,21 +355,30 @@ if ( ! function_exists( 'travelify_header_title' ) ) :
  * Show the title in header
  */
 function travelify_header_title() {
-	if( is_archive() ) {
-		$travelify_header_title = single_cat_title( '', FALSE );
-	}
-	elseif( is_search() ) {
+	if ( is_category() ) {
+		$travelify_header_title = single_cat_title( '', false );
+	} elseif ( is_tag() ) {
+		$travelify_header_title = single_tag_title( '', false );
+	} elseif ( is_tax() ) {
+		$travelify_header_title = single_term_title( '', false );
+	} elseif ( is_author() ) {
+		$travelify_header_title = get_the_author();
+	} elseif ( is_post_type_archive() ) {
+		$travelify_header_title = post_type_archive_title( '', false );
+	} elseif ( is_date() ) {
+		// Author, date and post-type archives used to fall through with no heading at all.
+		$travelify_header_title = get_the_archive_title();
+	} elseif ( is_archive() ) {
+		$travelify_header_title = single_cat_title( '', false );
+	} elseif ( is_search() ) {
 		$travelify_header_title = __( 'Search Results', 'travelify' );
-	}
-	elseif( is_page_template()  ) {
+	} elseif ( is_page_template() ) {
 		$travelify_header_title = get_the_title();
-	}
-	else {
+	} else {
 		$travelify_header_title = '';
 	}
 
 	return $travelify_header_title;
-
 }
 endif;
 ?>

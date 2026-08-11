@@ -508,6 +508,23 @@ a.more-link:focus {
 	position: fixed;
 	bottom: 10px;
 	right: 18px;
+	z-index: 999;
+}
+/* functions.js adds --ready, then toggles is-visible past 1000px of scroll.
+   Without JavaScript the link stays put and still works as an anchor. */
+.back-to-top--ready {
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+.back-to-top--ready.is-visible {
+	opacity: 1;
+	visibility: visible;
+}
+@media (prefers-reduced-motion: reduce) {
+	.back-to-top--ready {
+		transition: none;
+	}
 }
 .back-to-top a:before {
 	content: '\f432';
@@ -828,20 +845,167 @@ a.more-link:focus {
 	left: 188px;
 	top: 0px;
 }
-#main-nav select {
-	display: none;
-}
 .main-nav li.default-menu {
   display: none;
 }
-#main-nav select:focus {
-	outline: 2px solid #222222;
+
+/* Mobile menu controls -- hidden until the layout narrows. */
+#main-nav .menu-toggle {
+	display: none;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	margin: 0;
+	padding: 12px;
+	background: none;
+	border: none;
+	border-radius: 0;
+	box-shadow: none;
+	color: #fff;
+	font: 14px/1 'Ubuntu', sans-serif;
+	text-align: left;
+	text-shadow: inherit;
+	cursor: pointer;
+}
+#main-nav .menu-toggle:hover,
+#main-nav .menu-toggle:focus {
+	background: rgba(0, 0, 0, 0.12);
+	color: #fff;
+}
+#main-nav .menu-toggle-icon {
+	display: inline-block;
+	position: relative;
+	width: 18px;
+	height: 2px;
+	background: currentColor;
+	box-shadow: 0 -6px 0 currentColor, 0 6px 0 currentColor;
+}
+#main-nav.is-open .menu-toggle-icon {
+	background: transparent;
+	box-shadow: none;
+}
+#main-nav.is-open .menu-toggle-icon:before,
+#main-nav.is-open .menu-toggle-icon:after {
+	content: "";
+	position: absolute;
+	left: 0;
+	width: 18px;
+	height: 2px;
+	background: currentColor;
+}
+#main-nav.is-open .menu-toggle-icon:before {
+	transform: rotate(45deg);
+}
+#main-nav.is-open .menu-toggle-icon:after {
+	transform: rotate(-45deg);
+}
+#main-nav .submenu-toggle {
+	display: none;
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 44px;
+	height: 42px;
+	margin: 0;
+	padding: 0;
+	background: none;
+	border: none;
+	border-left: 1px solid rgba(255, 255, 255, 0.15);
+	border-radius: 0;
+	box-shadow: none;
+	color: #fff;
+	cursor: pointer;
+}
+#main-nav .submenu-toggle span {
+	display: block;
+	width: 8px;
+	height: 8px;
+	margin: 0 auto;
+	border-right: 2px solid currentColor;
+	border-bottom: 2px solid currentColor;
+	transform: rotate(45deg) translate(-2px, -2px);
+}
+#main-nav .submenu-open > .submenu-toggle span {
+	transform: rotate(-135deg) translate(-2px, -2px);
+}
+#main-nav .menu-toggle:focus-visible,
+#main-nav .submenu-toggle:focus-visible {
+	outline: 2px solid #fff;
+	outline-offset: -2px;
+}
+
+/* Without JavaScript there is no toggle, so keep the menu on screen. */
+.no-js #main-nav ul.root {
+	display: block;
 }
 
 /* =Featured Slider
 --------------------------------------------------------------*/
 .featured-slider,.featured-slider .slider-cycle {
 	position: relative;
+}
+
+/* Slides are stacked; slider.js sets the track height from the tallest one. */
+.travelify-slider .slider-cycle .slides {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	visibility: hidden;
+	opacity: 0;
+	transition: opacity var(--travelify-slide-duration, 1000ms) ease-in-out,
+		transform var(--travelify-slide-duration, 1000ms) ease-in-out,
+		clip-path var(--travelify-slide-duration, 1000ms) ease-in-out;
+}
+.travelify-slider .slider-cycle .slides.is-active,
+.travelify-slider .slider-cycle .slides.is-leaving {
+	visibility: visible;
+}
+/* Every slide stays absolute so the track height -- set by slider.js from the
+   tallest slide -- never shifts mid-transition and move the pager under the
+   pointer. */
+.travelify-slider .slider-cycle .slides.is-active {
+	opacity: 1;
+	transform: none;
+	z-index: 2;
+}
+.travelify-slider .slider-cycle .slides.is-leaving {
+	z-index: 1;
+}
+
+/* Directional slides. */
+.travelify-slider[data-effect="left"] .slider-cycle .slides { transform: translateX(100%); }
+.travelify-slider[data-effect="right"] .slider-cycle .slides { transform: translateX(-100%); }
+.travelify-slider[data-effect="up"] .slider-cycle .slides { transform: translateY(100%); }
+.travelify-slider[data-effect="down"] .slider-cycle .slides { transform: translateY(-100%); }
+.travelify-slider[data-effect="left"] .slider-cycle .slides.is-leaving { transform: translateX(-100%); }
+.travelify-slider[data-effect="right"] .slider-cycle .slides.is-leaving { transform: translateX(100%); }
+.travelify-slider[data-effect="up"] .slider-cycle .slides.is-leaving { transform: translateY(-100%); }
+.travelify-slider[data-effect="down"] .slider-cycle .slides.is-leaving { transform: translateY(100%); }
+
+/* Wipe / cover. */
+.travelify-slider[data-effect="wipe"] .slider-cycle .slides { clip-path: inset(0 100% 0 0); opacity: 1; }
+.travelify-slider[data-effect="wipe"] .slider-cycle .slides.is-active { clip-path: inset(0 0 0 0); }
+.travelify-slider[data-effect="wipe"] .slider-cycle .slides.is-leaving { clip-path: inset(0 0 0 100%); }
+
+/* Blinds. */
+.travelify-slider[data-effect="blind-x"] .slider-cycle .slides { transform: scaleX(0); opacity: 1; }
+.travelify-slider[data-effect="blind-y"] .slider-cycle .slides { transform: scaleY(0); opacity: 1; }
+.travelify-slider[data-effect="blind-x"] .slider-cycle .slides.is-leaving { transform: scaleX(0); }
+.travelify-slider[data-effect="blind-y"] .slider-cycle .slides.is-leaving { transform: scaleY(0); }
+
+/* Before slider.js runs, show the first slide only. */
+.featured-slider .slider-cycle .slides + .slides:not(.is-active):not(.is-leaving) {
+	display: none;
+}
+.travelify-slider .slider-cycle .slides + .slides:not(.is-active):not(.is-leaving) {
+	display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.travelify-slider .slider-cycle .slides {
+		transition: none;
+	}
 }
 .featured-slider .displayblock {
 	display: block;
@@ -891,26 +1055,47 @@ a.more-link:focus {
 	bottom: 15px;
 	z-index: 9999;
 }
-#controllers a {
+/* The pager is built by slider.js as <button>s; the <a> selectors are kept
+   so child themes that render their own markup still pick up the styling. */
+#controllers a,
+#controllers button {
 	width: 10px;
 	height: 10px;
+	min-width: 0;
 	margin: 0 4px;
+	padding: 0;
 	overflow: hidden;
 	display: inline-block;
+	vertical-align: middle;
 	background-color: #fff;
+	background-image: none;
+	border: none;
 	border-radius: 2px;
+	box-shadow: none;
+	text-shadow: none;
 	color: #fff;
+	font-size: 0;
+	line-height: 0;
+	cursor: pointer;
 }
 
-#controllers a.active {
+#controllers a.active,
+#controllers button.active {
 	background-color: #439f55;
 	color: #439f55;
 }
 
 #controllers a:hover,
-#controllers a:focus {
+#controllers a:focus,
+#controllers button:hover,
+#controllers button:focus {
 	background-color: #222222 !important;
 	color: #222222 !important;
+}
+
+#controllers button:focus-visible {
+	outline: 2px solid #fff;
+	outline-offset: 2px;
 }
 
 /* =Content
@@ -1036,7 +1221,7 @@ a.more-link:focus {
 					transition: all .3s ease-out;
 }
 .post .entry-title,
-.page h2.entry-title {
+.page .entry-title {
     padding-left: 2.5%;
     padding-right: 2.5%;
 }
@@ -1996,19 +2181,57 @@ article {
 		max-width: 280px;
 	}
 	#main-nav {
-		height: 36px;
-		padding: 13px 0 0;
+		height: auto;
+		padding: 0;
 	}
-	#main-nav ul {
+	#main-nav .menu-toggle {
+		display: flex;
+	}
+	/* Collapsed by default; the toggle button opens it. */
+	#main-nav ul.root {
 		display: none;
 	}
-	#main-nav select {
+	#main-nav.is-open ul.root {
 		display: block;
-		width: 100%;
+		padding-bottom: 8px;
+	}
+	#main-nav ul.root li {
+		float: none;
+		position: relative;
+	}
+	#main-nav ul.root li a {
+		float: none;
+		display: block;
+		height: auto;
+		padding: 10px 12px;
+		border-top: 1px solid rgba(255, 255, 255, 0.15);
+	}
+	/* Sub-menus become inline, disclosure-driven lists. */
+	#main-nav ul.root ul,
+	#main-nav ul.root li:hover ul,
+	#main-nav ul.root li:focus-within > ul {
+		display: none;
+	}
+	#main-nav ul.root li.submenu-open > ul {
+		display: block;
+		position: static;
+		width: auto;
+		top: auto;
+		left: auto;
+		border-bottom: none;
+		background: none;
+	}
+	#main-nav ul.root li.submenu-open > ul li {
 		border: none;
-		font: 14px 'Ubuntu', sans-serif;
-		color: #555;
-		height: 24px;
+	}
+	#main-nav ul.root li.submenu-open > ul a,
+	#main-nav ul.root li.submenu-open > ul li.current-menu-item a {
+		color: #fff;
+		padding-left: 28px;
+		font-size: 13px;
+	}
+	#main-nav .submenu-toggle {
+		display: block;
 	}
 	.page-title-wrap {
 		padding: 10px 0;

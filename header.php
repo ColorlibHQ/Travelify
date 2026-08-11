@@ -5,8 +5,10 @@
  */
 ?>
 <!DOCTYPE html>
-<html <?php language_attributes(); ?>>
+<html <?php language_attributes(); ?> class="no-js">
 <head>
+	<meta charset="<?php bloginfo( 'charset' ); ?>" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 	<?php
 		/**
@@ -35,13 +37,7 @@
 </head>
 
 <body <?php body_class(); ?>>
-	<?php
-	if ( function_exists( 'wp_body_open' ) ) {
-	    wp_body_open();
-	} else {
-	    do_action( 'wp_body_open' );
-	}
-	?>
+	<?php wp_body_open(); ?>
 	<?php
 		/**
 		 * travelify_before hook

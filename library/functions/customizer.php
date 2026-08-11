@@ -524,18 +524,69 @@ function travelify_options_register_theme_customizer($wp_customize)
             'type' => 'travelify-important-links'
         )));
 
-    $wp_customize->get_setting('travelify_menu_color')->transport       = 'postMessage';
-    $wp_customize->get_setting('travelify_menu_hover_color')->transport = 'postMessage';
-    $wp_customize->get_setting('travelify_entry_color')->transport      = 'postMessage';
-    $wp_customize->get_setting('travelify_element_color')->transport    = 'postMessage';
-    $wp_customize->get_setting('travelify_logo_color')->transport       = 'postMessage';
-    $wp_customize->get_setting('travelify_header_color')->transport     = 'postMessage';
-    $wp_customize->get_setting('travelify_wrapper_color')->transport    = 'postMessage';
-    $wp_customize->get_setting('travelify_content_bg_color')->transport = 'postMessage';
-    $wp_customize->get_setting('travelify_menu_item_color')->transport  = 'postMessage';
-    $wp_customize->get_setting('travelify_theme_options[header_logo]')->transport  = 'postMessage';
-    $wp_customize->get_setting('travelify_theme_options[header_show]')->transport  = 'postMessage';
-    $wp_customize->get_setting('travelify_theme_options[default_layout]')->transport  = 'postMessage';
+    /*
+     * Every colour previews without a reload; library/js/customizer.js keeps a
+     * <style> block in step with them.
+     *
+     * The logo, the header display mode and the sidebar layout deliberately
+     * stay on the default refresh transport: their preview handlers used to
+     * rebuild the header and shuffle #primary/#secondary around by hand, which
+     * drifted out of step with the templates.
+     */
+    $travelify_live_preview = array(
+        'travelify_menu_color',
+        'travelify_menu_hover_color',
+        'travelify_menu_item_color',
+        'travelify_entry_color',
+        'travelify_element_color',
+        'travelify_element_hover_color',
+        'travelify_logo_color',
+        'travelify_logo_hover_color',
+        'travelify_header_color',
+        'travelify_wrapper_color',
+        'travelify_content_bg_color',
+        'travelify_social_color',
+        'travelify_link_color',
+        'travelify_link_hover_color',
+    );
+
+    foreach ( $travelify_live_preview as $travelify_setting ) {
+        $wp_customize->get_setting( $travelify_setting )->transport = 'postMessage';
+    }
+
+    $wp_customize->get_setting( 'blogname' )->transport        = 'postMessage';
+    $wp_customize->get_setting( 'blogdescription' )->transport = 'postMessage';
+
+    if ( isset( $wp_customize->selective_refresh ) ) {
+        $wp_customize->selective_refresh->add_partial(
+            'blogname',
+            array(
+                'selector'        => '#site-title a',
+                'render_callback' => 'travelify_customize_partial_blogname',
+            )
+        );
+        $wp_customize->selective_refresh->add_partial(
+            'blogdescription',
+            array(
+                'selector'        => '#site-description',
+                'render_callback' => 'travelify_customize_partial_blogdescription',
+            )
+        );
+    }
+}
+
+/**
+ * Render the site title for the selective refresh partial.
+ */
+function travelify_customize_partial_blogname() {
+    bloginfo( 'name' );
+}
+
+/**
+ * Render the site tagline for the selective refresh partial.
+ */
+function travelify_customize_partial_blogdescription() {
+    bloginfo( 'description' );
 }
 
 /**
@@ -819,7 +870,7 @@ function travelify_customizer_css() {
  * @package Travelify
  */
 function travelify_customize_preview_js() {
-    wp_enqueue_script('travelify_customizer', get_template_directory_uri() . '/library/js/customizer.js', array('customize-preview'), '20151005', true);
+    wp_enqueue_script( 'travelify_customizer', get_template_directory_uri() . '/library/js/customizer.js', array( 'customize-preview' ), TRAVELIFY_VERSION, true );
 }
 
 

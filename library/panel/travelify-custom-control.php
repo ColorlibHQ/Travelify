@@ -113,8 +113,13 @@ class Travelify_Featured_Slider_Custom_Control extends WP_Customize_Control
       * @access public
       */
     public function enqueue() {
-        wp_enqueue_script( 'travelify_cloneya_js', get_template_directory_uri() . '/library/js/jquery-cloneya.min.js', array( 'jquery' ) );
-        wp_enqueue_script( 'travelify_custom_js', get_template_directory_uri() . '/library/js/customizer_custom.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-draggable' ) );
+        wp_enqueue_script(
+            'travelify_custom_js',
+            get_template_directory_uri() . '/library/js/customizer-slider-control.js',
+            array(),
+            TRAVELIFY_VERSION,
+            true
+        );
     }
 
     /**

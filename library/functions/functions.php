@@ -11,57 +11,69 @@
 
 add_action( 'wp_enqueue_scripts', 'travelify_scripts_styles_method' );
 /**
- * Register jquery scripts
+ * Register and enqueue the theme's styles and scripts.
+ *
+ * Everything is versioned from TRAVELIFY_VERSION so bumping the theme version
+ * busts every cached asset; nothing here depends on jQuery.
  */
 function travelify_scripts_styles_method() {
 
 	global $travelify_theme_options_settings;
 	$options = $travelify_theme_options_settings;
 
-   /**
+	$uri = get_template_directory_uri();
+
+	/**
+	 * Ubuntu, served from the theme.
+	 *
+	 * Loaded before the stylesheet so the @font-face rules are in place by the
+	 * time anything asks for the family.
+	 */
+	wp_enqueue_style( 'travelify-fonts', $uri . '/library/css/fonts.css', array(), TRAVELIFY_VERSION );
+
+	/**
 	 * Loads our main stylesheet.
 	 */
-	wp_enqueue_style( 'travelify_style', get_stylesheet_uri() );
+	wp_enqueue_style( 'travelify_style', get_stylesheet_uri(), array( 'travelify-fonts' ), TRAVELIFY_VERSION );
 
-	if( is_rtl() ) {
-		wp_enqueue_style( 'travelify-rtl-style', get_template_directory_uri() . '/rtl.css', false );
+	if ( is_rtl() ) {
+		wp_enqueue_style( 'travelify-rtl-style', $uri . '/rtl.css', array( 'travelify_style' ), TRAVELIFY_VERSION );
 	}
 
 	/**
 	 * Adds JavaScript to pages with the comment form to support
 	 * sites with threaded comments (when in use).
 	 */
-	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) )
+	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
-
-	/**
-	 * Register JQuery cycle js file for slider.
-	 * Register Jquery fancybox js and css file for fancybox effect.
-	 */
-	wp_register_script( 'jquery_cycle', get_template_directory_uri() . '/library/js/jquery.cycle.all.min.js', array( 'jquery' ), '2.9999.5', true );
-
-	wp_register_style( 'travelify_google_font_ubuntu', '//fonts.googleapis.com/css?family=Ubuntu' );
-
-
-	/**
-	 * Enqueue Slider setup js file.
-	 * Enqueue Fancy Box setup js and css file.
-	 */
-	if( ( is_home() || is_front_page() ) && "0" == $options[ 'disable_slider' ] ) {
-		wp_enqueue_script( 'travelify_slider', get_template_directory_uri() . '/library/js/slider-settings.min.js', array( 'jquery_cycle' ), false, true );
 	}
 
-	wp_enqueue_script( 'travelify_functions', get_template_directory_uri() . '/library/js/functions.min.js', array( 'jquery' ) );
+	wp_enqueue_script( 'travelify_functions', $uri . '/library/js/functions.js', array(), TRAVELIFY_VERSION, true );
 
-	wp_enqueue_style( 'travelify_google_font_ubuntu' );
+	wp_localize_script(
+		'travelify_functions',
+		'travelifyScreenReaderText',
+		array(
+			'menu'     => esc_html__( 'Menu', 'travelify' ),
+			'expand'   => esc_html__( 'Open sub-menu of', 'travelify' ),
+			'collapse' => esc_html__( 'Close sub-menu of', 'travelify' ),
+		)
+	);
 
-   /**
-    * Browser specific queuing i.e
-    */
-	// Modern approach: Only load HTML5 shim for older browsers that might need it
-	// This replaces the outdated IE-specific check with a more reliable feature detection
-	wp_enqueue_script('html5', get_template_directory_uri() . '/library/js/html5.min.js', array(), null, true, array('strategy' => 'defer'));
+	/**
+	 * The featured slider only runs where it is rendered.
+	 */
+	if ( ( is_home() || is_front_page() ) && '0' === (string) $options['disable_slider'] ) {
+		wp_enqueue_script( 'travelify_slider', $uri . '/library/js/slider.js', array(), TRAVELIFY_VERSION, true );
 
+		wp_localize_script(
+			'travelify_slider',
+			'travelifySliderL10n',
+			array(
+				'slide' => esc_html__( 'Slide', 'travelify' ),
+			)
+		);
+	}
 }
 
 /****************************************************************************************/

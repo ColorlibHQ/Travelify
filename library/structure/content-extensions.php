@@ -163,7 +163,7 @@ function travelify_theloop_for_archive() {
 	}
 	else {
 		?>
-		<h1 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h1>
+		<h2 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h2>
       <?php
    }
 }
@@ -190,9 +190,9 @@ function travelify_theloop_for_page() {
 			<?php do_action( 'travelify_before_post_header' ); ?>
 
 			<header class="entry-header">
-    			<h2 class="entry-title">
+    			<h1 class="entry-title">
     				<?php the_title(); ?>
-    			</h2><!-- .entry-title -->
+    			</h1><!-- .entry-title -->
   			</header>
 
   			<?php do_action( 'travelify_after_post_header' ); ?>
@@ -234,7 +234,7 @@ function travelify_theloop_for_page() {
 	}
 	else {
 		?>
-		<h1 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h1>
+		<h2 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h2>
       <?php
    }
 }
@@ -261,9 +261,9 @@ function travelify_theloop_for_single() {
 			<?php do_action( 'travelify_before_post_header' ); ?>
 
 			<header class="entry-header">
-    			<h2 class="entry-title">
+    			<h1 class="entry-title">
     				<?php the_title(); ?>
-    			</h2><!-- .entry-title -->
+    			</h1><!-- .entry-title -->
   		</header>
 
   		<?php do_action( 'travelify_after_post_header' ); ?>
@@ -332,7 +332,7 @@ function travelify_theloop_for_single() {
 	}
 	else {
 		?>
-		<h1 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h1>
+		<h2 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h2>
       <?php
    }
 }
@@ -383,7 +383,7 @@ function travelify_theloop_for_search() {
 	}
 	else {
 		?>
-		<h1 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h1>
+		<h2 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h2>
       <?php
    }
 }
@@ -492,7 +492,7 @@ function travelify_theloop_for_template_blog_image_large() {
 	}
 	else {
 		?>
-		<h1 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h1>
+		<h2 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h2>
       <?php
    }
    $wp_query = $temp_query;
@@ -602,7 +602,7 @@ function travelify_theloop_for_template_blog_image_medium() {
 	}
 	else {
 		?>
-		<h1 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h1>
+		<h2 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h2>
       <?php
    }
    $wp_query = $temp_query;
@@ -713,7 +713,7 @@ function travelify_theloop_for_template_blog_full_content() {
 	}
 	else {
 		?>
-		<h1 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h1>
+		<h2 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h2>
       <?php
    }
    $wp_query = $temp_query;
