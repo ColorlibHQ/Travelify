@@ -8,7 +8,7 @@
 
 <div id="content">
 		<header class="entry-header">
-			<h1 class="entry-title"><?php esc_html_e( 'Error 404 - Page NOT Found', 'travelify' ); ?></a></h1>
+			<h1 class="entry-title"><?php esc_html_e( 'Error 404 - Page NOT Found', 'travelify' ); ?></h1>
 		</header>
 		<div class="entry-content clearfix" >
 			<p><?php esc_html_e( 'It seems we can\'t find what you\'re looking for.', 'travelify' ); ?></p>
@@ -21,7 +21,7 @@
 			<ul>
 				<li><?php esc_html_e( 'Check for a mis-typed URL error', 'travelify' ); ?></li>
 				<li><?php esc_html_e( 'Press the refresh button on your browser.', 'travelify' ); ?></li>
-				<li><?php esc_html_e( 'Go back to', 'travelify' ); ?> <a href="<?php echo esc_url( home_url() ) ?>/" title="<?php bloginfo( 'name' ) ?>" rel="home"><?php esc_html_e( 'Homepage', 'travelify' ); ?></a></li>
+				<li><?php esc_html_e( 'Go back to', 'travelify' ); ?> <a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home"><?php esc_html_e( 'Homepage', 'travelify' ); ?></a></li>
 			</ul>
 		</div><!-- .entry-content -->
 	</div><!-- #content -->

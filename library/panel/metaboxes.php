@@ -2,9 +2,12 @@
 /**
  * Travelify Meta Boxes
  *
+ * Per-post/per-page sidebar layout override.
  */
 
- add_action( 'add_meta_boxes', 'travelify_add_custom_box' );
+/****************************************************************************************/
+
+add_action( 'add_meta_boxes', 'travelify_add_custom_box' );
 /**
  * Add Meta Boxes.
  *
@@ -12,94 +15,122 @@
  */
 function travelify_add_custom_box() {
 	add_meta_box(
-		'siderbar-layout',							  										//Unique ID
-		__( 'Select layout for this specific Page only ( Note: This setting only reflects if page Template is set as Default Template and Blog Type Templates.)', 'travelify' ),   	//Title
-		'travelify_sidebar_layout',                   							//Callback function
-		'page'                                          							//show metabox in pages
+		'siderbar-layout',
+		__( 'Select layout for this specific Page only ( Note: This setting only reflects if page Template is set as Default Template and Blog Type Templates.)', 'travelify' ),
+		'travelify_sidebar_layout',
+		'page'
 	);
 	add_meta_box(
-		'siderbar-layout',							  										//Unique ID
-		__( 'Select layout for this specific Post only', 'travelify' ),   	//Title
-		'travelify_sidebar_layout',                   							//Callback function
-		'post'                                          							//show metabox in posts
+		'siderbar-layout',
+		__( 'Select layout for this specific Post only', 'travelify' ),
+		'travelify_sidebar_layout',
+		'post'
 	);
 }
 
 /****************************************************************************************/
 
-global $sidebar_layout;
-$sidebar_layout = array(
-							'default-sidebar' 		=> array(
-															'id'        => 'travelify_sidebarlayout',
-															'value'     => 'default',
-															'label'     => __( 'Default Layout Set in', 'travelify' ).' '.'<a href="'.esc_url( home_url( '/' ) ).'/wp-admin/themes.php?page=theme_options" target="_blank">'.__( 'Theme Settings', 'travelify' ).'</a>',
-															'thumbnail' => ' '
-															),
-							'no-sidebar'         => array(
-															'id'        => 'travelify_sidebarlayout',
-															'value'     => 'no-sidebar',
-															'label'     => __( 'No sidebar', 'travelify' ),
-															'thumbnail' => get_template_directory_uri() . '/library/panel/images/no-sidebar.png'
-															),
-							'no-sidebar-full-width' => array(
-															'id'        => 'travelify_sidebarlayout',
-															'value'     => 'no-sidebar-full-width',
-															'label'     => __( 'No sidebar, Full Width', 'travelify' ),
-															'thumbnail' => get_template_directory_uri() . '/library/panel/images/no-sidebar-fullwidth.png'
-															),
-							'no-sidebar-one-column' => array(
-															'id'        => 'travelify_sidebarlayout',
-															'value'     => 'no-sidebar-one-column',
-															'label'     => __( 'No Sidebar, One Column', 'travelify' ),
-															'thumbnail' => get_template_directory_uri() . '/library/panel/images/one-column.png'
-															),
-							'left-sidebar' => array(
-															'id'        => 'travelify_sidebarlayout',
-															'value'     => 'left-sidebar',
-															'label'     => __( 'Left sidebar', 'travelify' ),
-															'thumbnail' => get_template_directory_uri() . '/library/panel/images/left-sidebar.png'
-															),
-							'right-sidebar' => array(
-															'id'        => 'travelify_sidebarlayout',
-															'value'     => 'right-sidebar',
-															'label'     => __( 'Right sidebar', 'travelify' ),
-															'thumbnail' => get_template_directory_uri() . '/library/panel/images/right-sidebar.png'
-															)
-						);
+/**
+ * The sidebar layouts offered by the per-post metabox.
+ *
+ * Built on demand rather than at file scope: the labels are translated, and
+ * translating before `init` trips WordPress 6.7+'s _load_textdomain_just_in_time
+ * notice on every request.
+ *
+ * @return array Layout definitions keyed by slug.
+ */
+function travelify_get_sidebar_layouts() {
+	$images = get_template_directory_uri() . '/library/panel/images/';
+
+	return array(
+		'default-sidebar'       => array(
+			'id'        => 'travelify_sidebarlayout',
+			'value'     => 'default',
+			/* translators: %s: link to the Customizer layout options. */
+			'label'     => sprintf(
+				esc_html__( 'Default Layout Set in %s', 'travelify' ),
+				'<a href="' . esc_url( admin_url( 'customize.php?autofocus[section]=travelify_layout_options' ) ) . '">' . esc_html__( 'Theme Settings', 'travelify' ) . '</a>'
+			),
+			'thumbnail' => '',
+		),
+		'no-sidebar'            => array(
+			'id'        => 'travelify_sidebarlayout',
+			'value'     => 'no-sidebar',
+			'label'     => esc_html__( 'No sidebar', 'travelify' ),
+			'thumbnail' => $images . 'no-sidebar.png',
+		),
+		'no-sidebar-full-width' => array(
+			'id'        => 'travelify_sidebarlayout',
+			'value'     => 'no-sidebar-full-width',
+			'label'     => esc_html__( 'No sidebar, Full Width', 'travelify' ),
+			'thumbnail' => $images . 'no-sidebar-fullwidth.png',
+		),
+		'no-sidebar-one-column' => array(
+			'id'        => 'travelify_sidebarlayout',
+			'value'     => 'no-sidebar-one-column',
+			'label'     => esc_html__( 'No Sidebar, One Column', 'travelify' ),
+			'thumbnail' => $images . 'one-column.png',
+		),
+		'left-sidebar'          => array(
+			'id'        => 'travelify_sidebarlayout',
+			'value'     => 'left-sidebar',
+			'label'     => esc_html__( 'Left sidebar', 'travelify' ),
+			'thumbnail' => $images . 'left-sidebar.png',
+		),
+		'right-sidebar'         => array(
+			'id'        => 'travelify_sidebarlayout',
+			'value'     => 'right-sidebar',
+			'label'     => esc_html__( 'Right sidebar', 'travelify' ),
+			'thumbnail' => $images . 'right-sidebar.png',
+		),
+	);
+}
+
+add_action( 'init', 'travelify_setup_sidebar_layout_global' );
+/**
+ * Keep the legacy $sidebar_layout global populated for child themes.
+ *
+ * Nothing in the theme reads it any more; travelify_get_sidebar_layouts() is
+ * the supported way to reach this data.
+ */
+function travelify_setup_sidebar_layout_global() {
+	$GLOBALS['sidebar_layout'] = travelify_get_sidebar_layouts();
+}
 
 /****************************************************************************************/
 
 /**
  * Displays metabox to for sidebar layout
  */
-function travelify_sidebar_layout() {
-	global $sidebar_layout, $post;
-	// Use nonce for verification
-	wp_nonce_field( basename( __FILE__ ), 'custom_meta_box_nonce' );
+function travelify_sidebar_layout( $post ) {
+	// Use nonce for verification.
+	wp_nonce_field( 'travelify_save_sidebar_layout', 'custom_meta_box_nonce' );
 
-	// Begin the field table and loop  ?>
+	$meta = get_post_meta( $post->ID, 'travelify_sidebarlayout', true );
+	if ( empty( $meta ) ) {
+		$meta = 'default';
+	}
+	?>
 	<table id="sidebar-metabox" class="form-table" width="100%">
 		<tbody>
 			<tr>
 				<?php
-				foreach ($sidebar_layout as $field) {
-					$meta = get_post_meta( $post->ID, $field['id'], true );
-					if(empty( $meta ) ){
-						$meta='default';
-					}
-					if( ' ' == $field['thumbnail'] ): ?>
+				foreach ( travelify_get_sidebar_layouts() as $field ) {
+					if ( '' === $field['thumbnail'] ) :
+						?>
 						<label class="description">
-						<input type="radio" name="<?php echo $field['id']; ?>" value="<?php echo $field['value']; ?>" <?php checked( $field['value'], $meta ); ?>/>&nbsp;&nbsp;<?php echo $field['label']; ?>
+						<input type="radio" name="<?php echo esc_attr( $field['id'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" <?php checked( $field['value'], $meta ); ?> />&nbsp;&nbsp;<?php echo wp_kses( $field['label'], array( 'a' => array( 'href' => array() ) ) ); ?>
 						</label>
-					<?php else: ?>
+					<?php else : ?>
 						<td>
 							<label class="description">
-							<span><img src="<?php echo esc_url( $field['thumbnail'] ); ?>" width="136" height="122" alt="" /></span></br>
-							<input type="radio" name="<?php echo $field['id']; ?>" value="<?php echo $field['value']; ?>" <?php checked( $field['value'], $meta ); ?>/>&nbsp;&nbsp;<?php echo $field['label']; ?>
+							<span><img src="<?php echo esc_url( $field['thumbnail'] ); ?>" width="136" height="122" alt="" /></span><br />
+							<input type="radio" name="<?php echo esc_attr( $field['id'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" <?php checked( $field['value'], $meta ); ?> />&nbsp;&nbsp;<?php echo esc_html( $field['label'] ); ?>
 							</label>
 						</td>
-					<?php endif;
-				} // end foreach
+						<?php
+					endif;
+				}
 				?>
 			</tr>
 		</tbody>
@@ -109,39 +140,47 @@ function travelify_sidebar_layout() {
 
 /****************************************************************************************/
 
-
-add_action('save_post', 'travelify_save_custom_meta');
+add_action( 'save_post', 'travelify_save_custom_meta' );
 /**
- * save the custom metabox data
+ * Save the custom metabox data.
+ *
+ * @param int $post_id Post being saved.
  * @hooked to save_post hook
  */
 function travelify_save_custom_meta( $post_id ) {
-	global $sidebar_layout, $post;
 
 	// Verify the nonce before proceeding.
-    if ( !isset( $_POST[ 'custom_meta_box_nonce' ] ) || !wp_verify_nonce( $_POST[ 'custom_meta_box_nonce' ], basename( __FILE__ ) ) )
-      return;
+	if ( ! isset( $_POST['custom_meta_box_nonce'] )
+		|| ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['custom_meta_box_nonce'] ) ), 'travelify_save_sidebar_layout' ) ) {
+		return;
+	}
 
-	// Stop WP from clearing custom fields on autosave
-    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE)
-      return;
+	// Stop WP from clearing custom fields on autosave.
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
 
-	if ('page' == $_POST['post_type']) {
-      if (!current_user_can( 'edit_page', $post_id ) )
-         return $post_id;
-   }
-   elseif (!current_user_can( 'edit_post', $post_id ) ) {
-      return $post_id;
-   }
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
 
-	foreach ($sidebar_layout as $field) {
-		//Execute this saving function
-		$old = get_post_meta( $post_id, $field['id'], true);
-		$new = $_POST[$field['id']];
-		if ($new && $new != $old) {
-			update_post_meta($post_id, $field['id'], $new);
-		} elseif ('' == $new && $old) {
-			delete_post_meta($post_id, $field['id'], $old);
-		}
-	} // end foreach
+	if ( ! isset( $_POST['travelify_sidebarlayout'] ) ) {
+		return;
+	}
+
+	$submitted = sanitize_key( wp_unslash( $_POST['travelify_sidebarlayout'] ) );
+
+	// Only ever store a layout the theme actually offers.
+	$allowed = wp_list_pluck( travelify_get_sidebar_layouts(), 'value' );
+
+	if ( ! in_array( $submitted, $allowed, true ) ) {
+		return;
+	}
+
+	if ( 'default' === $submitted ) {
+		delete_post_meta( $post_id, 'travelify_sidebarlayout' );
+		return;
+	}
+
+	update_post_meta( $post_id, 'travelify_sidebarlayout', $submitted );
 }

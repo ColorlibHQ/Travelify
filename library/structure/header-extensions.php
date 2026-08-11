@@ -98,7 +98,7 @@ function travelify_headerdetails() {
 						?>
 							<h1 id="site-title">
 								<a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
-									<img src="<?php echo $options[ 'header_logo' ]; ?>" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>">
+									<img src="<?php echo esc_url( $options['header_logo'] ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>">
 								</a>
 							</h1>
 						<?php
@@ -158,7 +158,7 @@ function travelify_headerdetails() {
 		    		if( function_exists( 'travelify_breadcrumb' ) )
 						travelify_breadcrumb();
 					?>
-				   <h3 class="page-title"><?php echo travelify_header_title(); ?></h3><!-- .page-title -->
+				   <h3 class="page-title"><?php echo esc_html( travelify_header_title() ); ?></h3><!-- .page-title -->
 				</div>
 	    	</div>
 	   <?php
@@ -231,45 +231,54 @@ function travelify_featured_post_slider() {
 	global $travelify_theme_options_settings;
   	$options = $travelify_theme_options_settings;
 
-  $travelify_featured_post_slider = '';
-	if (!empty( $options[ 'featured_post_slider' ] ) ) {
+	$travelify_featured_post_slider = '';
+
+	$slides = isset( $options['featured_post_slider'] ) && is_array( $options['featured_post_slider'] ) ? array_filter( array_map( 'absint', $options['featured_post_slider'] ) ) : array();
+
+	if ( ! empty( $slides ) ) {
 		$travelify_featured_post_slider .= '
 		<section class="featured-slider"><div class="slider-cycle">';
 			$get_featured_posts = new WP_Query( array(
-				'posts_per_page' 		    => $options[ 'slider_quantity' ],
-				'post_type'					    => array( 'post', 'page' ),
-				'post__in'		 			    => $options[ 'featured_post_slider' ],
-				'orderby' 		 			    => 'post__in',
-				'suppress_filters' 	    => false,
-				'ignore_sticky_posts' 	=> 1 						// ignore sticky posts
+				'posts_per_page'      => absint( $options['slider_quantity'] ),
+				'post_type'           => array( 'post', 'page' ),
+				'post__in'            => $slides,
+				'orderby'             => 'post__in',
+				'suppress_filters'    => false,
+				'ignore_sticky_posts' => 1, // ignore sticky posts
 			));
-			$i=0; while ( $get_featured_posts->have_posts()) : $get_featured_posts->the_post(); $i++;
-				$title_attribute = apply_filters( 'the_title', get_the_title( $post->ID ) );
-				$excerpt = get_the_excerpt();
-				if ( 1 == $i ) { $classes = "slides displayblock"; } else { $classes = "slides displaynone"; }
+			$i = 0;
+			while ( $get_featured_posts->have_posts() ) :
+				$get_featured_posts->the_post();
+				$i++;
+
+				$title_attribute = get_the_title( $post->ID );
+				$excerpt         = get_the_excerpt();
+				$classes         = ( 1 === $i ) ? 'slides displayblock' : 'slides displaynone';
+
 				$travelify_featured_post_slider .= '
-				<div class="'.$classes.'">';
-						if( has_post_thumbnail() ) {
+				<div class="' . esc_attr( $classes ) . '">';
+						if ( has_post_thumbnail() ) {
 
-							$travelify_featured_post_slider .= '<figure><a href="' . esc_url( get_permalink() ) . '" title="'.the_title('','',false).'">';
+							$travelify_featured_post_slider .= '<figure><a href="' . esc_url( get_permalink() ) . '" title="' . esc_attr( $title_attribute ) . '">';
 
-							$travelify_featured_post_slider .= get_the_post_thumbnail( $post->ID, 'slider', array( 'title' => esc_attr( $title_attribute ), 'alt' => esc_attr( $title_attribute ), 'class'	=> 'pngfix' ) ).'</a></figure>';
+							$travelify_featured_post_slider .= get_the_post_thumbnail( $post->ID, 'travelify-slider', array( 'alt' => esc_attr( $title_attribute ), 'class' => 'pngfix' ) ) . '</a></figure>';
 						}
-						if( $title_attribute != '' || $excerpt !='' ) {
-						$travelify_featured_post_slider .= '
+						if ( '' !== $title_attribute || '' !== $excerpt ) {
+							$travelify_featured_post_slider .= '
 							<article class="featured-text">';
-							if( $title_attribute !='' ) {
-									$travelify_featured_post_slider .= '<div class="featured-title"><a href="' . esc_url( get_permalink() ) . '" title="'.the_title('','',false).'">'. get_the_title() . '</a></div><!-- .featured-title -->';
+							if ( '' !== $title_attribute ) {
+								$travelify_featured_post_slider .= '<div class="featured-title"><a href="' . esc_url( get_permalink() ) . '" title="' . esc_attr( $title_attribute ) . '">' . esc_html( get_the_title() ) . '</a></div><!-- .featured-title -->';
 							}
-							if( $excerpt !='' ) {
-								$travelify_featured_post_slider .= '<div class="featured-content">'.$excerpt.'</div><!-- .featured-content -->';
+							if ( '' !== $excerpt ) {
+								$travelify_featured_post_slider .= '<div class="featured-content">' . wp_kses_post( $excerpt ) . '</div><!-- .featured-content -->';
 							}
-						$travelify_featured_post_slider .= '
+							$travelify_featured_post_slider .= '
 							</article><!-- .featured-text -->';
 						}
 				$travelify_featured_post_slider .= '
 				</div><!-- .slides -->';
-			endwhile; wp_reset_postdata();
+			endwhile;
+			wp_reset_postdata();
 		$travelify_featured_post_slider .= '</div>
 		<nav id="controllers" class="clearfix">
 		</nav><!-- #controllers --></section><!-- .featured-slider -->';

@@ -71,12 +71,16 @@ add_filter( 'wp_page_menu', 'travelify_wp_page_menu' );
  * Remove div from wp_page_menu() and replace with ul.
  * @uses wp_page_menu filter
  */
-function travelify_wp_page_menu ( $page_markup ) {
-	preg_match('/^<div class=\"([a-z0-9-_]+)\">/i', $page_markup, $matches);
-	$divclass = $matches[1];
-	$replace = array('<div class="'.$divclass.'">', '</div>');
-	$new_markup = str_replace($replace, '', $page_markup);
-	$new_markup = preg_replace('/^<ul>/i', '<ul class="'.$divclass.'">', $new_markup);
+function travelify_wp_page_menu( $page_markup ) {
+	if ( ! preg_match( '/^<div class=\"([a-z0-9-_]+)\">/i', $page_markup, $matches ) ) {
+		return $page_markup;
+	}
+
+	$divclass   = $matches[1];
+	$replace    = array( '<div class="' . $divclass . '">', '</div>' );
+	$new_markup = str_replace( $replace, '', $page_markup );
+	$new_markup = preg_replace( '/^<ul>/i', '<ul class="' . $divclass . '">', $new_markup );
+
 	return $new_markup;
 }
 
@@ -184,7 +188,7 @@ function travelify_body_class( $classes ) {
 		$classes[] = 'no-sidebar-template';
 	}
 
-	if( is_page_template( 'page-blog-medium-image.php' ) ) {
+	if ( is_page_template( 'templates/template-blog-medium-image.php' ) ) {
 		$classes[] = 'blog-medium';
 	}
 
@@ -199,21 +203,31 @@ add_action('wp_head', 'travelify_internal_css');
  */
 function travelify_internal_css() {
 
-	if ( ( !$travelify_internal_css = get_transient( 'travelify_internal_css' ) ) ) {
+	$travelify_internal_css = get_transient( 'travelify_internal_css' );
+
+	if ( false === $travelify_internal_css ) {
 
 		global $travelify_theme_options_settings;
 		$options = $travelify_theme_options_settings;
 
-		if( !empty( $options[ 'custom_css' ] ) ) {
-			$travelify_internal_css = '<!-- '.get_bloginfo('name').' Custom CSS Styles -->' . "\n";
-			$travelify_internal_css .= '<style type="text/css" media="screen">' . "\n";
-			$travelify_internal_css .=  $options['custom_css'] . "\n";
+		$travelify_internal_css = '';
+
+		if ( ! empty( $options['custom_css'] ) ) {
+			/*
+			 * strip_tags() here is deliberate: the stored value is CSS, so any
+			 * tag in it can only be an attempt to break out of the <style>
+			 * block. Legacy installs may hold values saved before the option
+			 * was sanitised.
+			 */
+			$travelify_internal_css  = '<style id="travelify-custom-css" media="screen">' . "\n";
+			$travelify_internal_css .= wp_strip_all_tags( $options['custom_css'] ) . "\n";
 			$travelify_internal_css .= '</style>' . "\n";
 		}
 
 		set_transient( 'travelify_internal_css', $travelify_internal_css, 86940 );
 	}
-	echo $travelify_internal_css;
+
+	echo $travelify_internal_css; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built and sanitised above.
 }
 
 
@@ -224,16 +238,37 @@ add_action('template_redirect', 'travelify_feed_redirect');
  * Redirect WordPress Feeds To FeedBurner
  */
 function travelify_feed_redirect() {
+	if ( ! is_feed() ) {
+		return;
+	}
+
 	global $travelify_theme_options_settings;
 	$options = $travelify_theme_options_settings;
 
-	if ( !empty( $options['feed_url'] ) ) {
-		$url = 'Location: '.$options['feed_url'];
-		if ( is_feed() && !preg_match('/feedburner|feedvalidator/i', $_SERVER['HTTP_USER_AGENT'])) {
-			header($url);
-			header('HTTP/1.1 302 Temporary Redirect');
-		}
+	if ( empty( $options['feed_url'] ) ) {
+		return;
 	}
+
+	/*
+	 * Re-validate at output time. esc_url_raw() strips the CR/LF that would
+	 * otherwise let a stored value inject extra response headers, and rejects
+	 * anything that is not an http(s) URL.
+	 */
+	$feed_url = esc_url_raw( $options['feed_url'], array( 'http', 'https' ) );
+
+	if ( empty( $feed_url ) ) {
+		return;
+	}
+
+	$user_agent = isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '';
+
+	// Never redirect the services that are fetching the feed on our behalf.
+	if ( preg_match( '/feedburner|feedvalidator/i', $user_agent ) ) {
+		return;
+	}
+
+	wp_redirect( $feed_url, 302 );
+	exit;
 }
 
 /****************************************************************************************/
@@ -244,21 +279,23 @@ add_action( 'pre_get_posts','travelify_alter_home' );
  *
  * @uses pre_get_posts hook
  */
-function travelify_alter_home( $query ){
-	global $travelify_theme_options_settings;
-	$options = $travelify_theme_options_settings;
-	$cats = $options[ 'front_page_category' ];
-
-	if ( $options[ 'exclude_slider_post'] != "0" && !empty( $options[ 'featured_post_slider' ] ) ) {
-		if( $query->is_main_query() && $query->is_home() ) {
-			$query->query_vars['post__not_in'] = $options[ 'featured_post_slider' ];
-		}
+function travelify_alter_home( $query ) {
+	if ( ! $query->is_main_query() || ! $query->is_home() ) {
+		return;
 	}
 
-	if ( !in_array( '0', $cats ) ) {
-		if( $query->is_main_query() && $query->is_home() ) {
-			$query->query_vars['category__in'] = $options[ 'front_page_category' ];
-		}
+	global $travelify_theme_options_settings;
+	$options = $travelify_theme_options_settings;
+
+	$slides = isset( $options['featured_post_slider'] ) && is_array( $options['featured_post_slider'] ) ? array_map( 'absint', $options['featured_post_slider'] ) : array();
+	$cats   = isset( $options['front_page_category'] ) && is_array( $options['front_page_category'] ) ? array_map( 'absint', $options['front_page_category'] ) : array();
+
+	if ( ! empty( $slides ) && '0' !== (string) $options['exclude_slider_post'] ) {
+		$query->query_vars['post__not_in'] = $slides;
+	}
+
+	if ( ! empty( $cats ) && ! in_array( 0, $cats, true ) ) {
+		$query->query_vars['category__in'] = $cats;
 	}
 }
 

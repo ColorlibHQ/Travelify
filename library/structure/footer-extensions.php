@@ -32,7 +32,15 @@ add_action( 'travelify_footer', 'travelify_footer_info', 30 );
  * function to show the footer info, copyright information
  */
 function travelify_footer_info() {
-   echo '<div class="copyright">'.__( 'Copyright &copy;', 'travelify' ).' '.date('Y').' '.travelify_site_link().'. '.__( 'Theme by', 'travelify' ).' '.travelify_colorlib_link().' '.__( 'Powered by', 'travelify' ).' '.travelify_wp_link().'</div><!-- .copyright -->';
+	echo '<div class="copyright">'
+		. esc_html__( 'Copyright &copy;', 'travelify' ) . ' '
+		. esc_html( wp_date( 'Y' ) ) . ' '
+		. travelify_site_link() . '. ' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in the helper.
+		. esc_html__( 'Theme by', 'travelify' ) . ' '
+		. travelify_colorlib_link() . ' ' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in the helper.
+		. esc_html__( 'Powered by', 'travelify' ) . ' '
+		. travelify_wp_link() // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in the helper.
+		. '</div><!-- .copyright -->';
 }
 
 /****************************************************************************************/

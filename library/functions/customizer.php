@@ -542,10 +542,35 @@ function travelify_options_register_theme_customizer($wp_customize)
  * Adds sanitization callback function: colors
  * @package Travelify
  */
-function travelify_sanitize_hexcolor($color) {
-    if ($unhashed = sanitize_hex_color_no_hash($color))
+function travelify_sanitize_hexcolor( $color ) {
+    $unhashed = sanitize_hex_color_no_hash( $color );
+
+    if ( $unhashed ) {
         return '#' . $unhashed;
-    return $color;
+    }
+
+    // Never hand back the raw input: an invalid colour becomes no colour.
+    return '';
+}
+
+/**
+ * Re-validate a stored colour at output time.
+ *
+ * Theme mods saved before the sanitizer was tightened may hold arbitrary text,
+ * which would otherwise be printed straight into the wp_head <style> block.
+ *
+ * @param string $mod     Theme mod name.
+ * @param string $default Fallback colour, used when the stored value is unusable.
+ * @return string A valid hex colour.
+ */
+function travelify_css_color( $mod, $default = '' ) {
+    $color = travelify_sanitize_hexcolor( get_theme_mod( $mod, $default ) );
+
+    if ( '' === $color ) {
+        $color = sanitize_hex_color( $default );
+    }
+
+    return (string) $color;
 }
 
 /**
@@ -560,10 +585,13 @@ function travelify_sanitize_text($input) {
  * Adds sanitization callback function: Number
  * @package Travelify
  */
-function travelify_sanitize_number($input) {
-    if ( isset( $input ) && is_numeric( $input ) ) {
-        return $input;
+function travelify_sanitize_number( $input ) {
+    if ( is_numeric( $input ) ) {
+        return abs( (float) $input );
     }
+
+    // Never return null: it would be stored and then used in arithmetic.
+    return 0;
 }
 
 /**
@@ -631,8 +659,10 @@ function travelify_sanitize_radio_layout( $input ) {
  * @package Travelify
  */
 function travelify_sanitize_multiselect( $values ) {
-    $multi_values = !is_array( $values ) ? explode( ',', $values ) : $values;
-    return !empty( $multi_values ) ? array_map( 'travelify_sanitize_text', $multi_values ) : array();
+    // The only thing this setting ever holds is a list of category IDs.
+    $multi_values = is_array( $values ) ? $values : explode( ',', (string) $values );
+
+    return array_values( array_map( 'absint', $multi_values ) );
 }
 
 /**
@@ -641,16 +671,23 @@ function travelify_sanitize_multiselect( $values ) {
  */
 function travelify_sanitize_slider( $values ) {
     $output = array();
-    $slider_values = !is_array( $values ) ? json_decode( $values ) : $values;
-    if( !empty( $slider_values ) ){
-        $i = 1;
-        foreach( $slider_values as $val ){
-            if( is_numeric( $val ) && !empty( $val ) ) {
-                   $output[$i] = $val;
-                   $i++;
-            }
+
+    $slider_values = is_array( $values ) ? $values : json_decode( (string) $values );
+
+    if ( ! is_array( $slider_values ) ) {
+        return $output;
+    }
+
+    $i = 1;
+    foreach ( $slider_values as $val ) {
+        // Slides are post IDs and nothing else.
+        $id = absint( $val );
+        if ( $id > 0 ) {
+            $output[ $i ] = $id;
+            $i++;
         }
     }
+
     return $output;
 }
 
@@ -659,13 +696,29 @@ function travelify_sanitize_slider( $values ) {
  * @package Travelify
  */
 function travelify_customizer_css() {
+
+    // Every colour is re-validated here; see travelify_css_color().
+    $link_color         = travelify_css_color( 'travelify_link_color', '#57AD68' );
+    $link_hover_color   = travelify_css_color( 'travelify_link_hover_color', '#439f55' );
+    $logo_color         = travelify_css_color( 'travelify_logo_color', '#57ad68' );
+    $logo_hover_color   = travelify_css_color( 'travelify_logo_hover_color', '#439f55' );
+    $wrapper_color      = travelify_css_color( 'travelify_wrapper_color', '#F8F8F8' );
+    $social_color       = travelify_css_color( 'travelify_social_color', '#d0d0d0' );
+    $menu_color         = travelify_css_color( 'travelify_menu_color', '#57ad68' );
+    $menu_hover_color   = travelify_css_color( 'travelify_menu_hover_color', '#439f55' );
+    $menu_item_color    = travelify_css_color( 'travelify_menu_item_color', '#fff' );
+    $content_bg_color   = travelify_css_color( 'travelify_content_bg_color', '#fff' );
+    $header_color       = travelify_css_color( 'travelify_header_color', '#1b1e1f' );
+    $entry_color        = travelify_css_color( 'travelify_entry_color', '#1D1D1D' );
+    $element_color      = travelify_css_color( 'travelify_element_color', '#57ad68' );
+    $element_hover      = travelify_css_color( 'travelify_element_hover_color', '#439f55' );
     ?>
-    <style type="text/css">
-        a { color: <?php echo esc_attr( get_theme_mod('travelify_link_color', '#57AD68') ); ?>; }
-        #site-title a { color: <?php echo esc_attr( get_theme_mod('travelify_logo_color') ); ?>; }
-        #site-title a:hover, #site-title a:focus  { color: <?php echo esc_attr( get_theme_mod('travelify_logo_hover_color') ); ?>; }
-        .wrapper { background: <?php echo esc_attr( get_theme_mod('travelify_wrapper_color', '#F8F8F8') ); ?>; }
-        .social-icons ul li a { color: <?php echo esc_attr( get_theme_mod('travelify_social_color', '#d0d0d0') ); ?>; }
+    <style id="travelify-customizer-css">
+        a { color: <?php echo esc_attr( $link_color ); ?>; }
+        #site-title a { color: <?php echo esc_attr( $logo_color ); ?>; }
+        #site-title a:hover, #site-title a:focus  { color: <?php echo esc_attr( $logo_hover_color ); ?>; }
+        .wrapper { background: <?php echo esc_attr( $wrapper_color ); ?>; }
+        .social-icons ul li a { color: <?php echo esc_attr( $social_color ); ?>; }
 		#main-nav a,
 		#main-nav a:hover,
 		#main-nav a:focus,
@@ -674,9 +727,9 @@ function travelify_customizer_css() {
 		#main-nav ul li.current-menu-ancestor a,
 		#main-nav ul li.current_page_item a,
 		#main-nav ul li:hover > a,
-		#main-nav ul li:focus-within > a { color: <?php echo esc_attr( get_theme_mod('travelify_menu_item_color', '#fff') ); ?>; }
-        .widget, article { background: <?php echo esc_attr( get_theme_mod('travelify_content_bg_color', '#fff') ); ?>; }
-        .entry-title, .entry-title a, .entry-title a:focus, h1, h2, h3, h4, h5, h6, .widget-title  { color: <?php echo esc_attr( get_theme_mod('travelify_header_color', '#1b1e1f') ); ?>; }
+		#main-nav ul li:focus-within > a { color: <?php echo esc_attr( $menu_item_color ); ?>; }
+        .widget, article { background: <?php echo esc_attr( $content_bg_color ); ?>; }
+        .entry-title, .entry-title a, .entry-title a:focus, h1, h2, h3, h4, h5, h6, .widget-title  { color: <?php echo esc_attr( $header_color ); ?>; }
 		a:focus,
 		a:active,
 		a:hover,
@@ -695,9 +748,9 @@ function travelify_customizer_css() {
 		.entry-meta a:hover,
 		.entry-meta a:focus,
 		#site-generator .copyright a:hover,
-		#site-generator .copyright a:focus { color: <?php echo esc_attr( get_theme_mod('travelify_link_hover_color', '#439f55') ); ?>; }
-        #main-nav { background: <?php echo esc_attr( get_theme_mod('travelify_menu_color', '#57ad68') ); ?>; border-color: <?php echo esc_attr( get_theme_mod('travelify_menu_color', '#57ad68') ); ?>; }
-        #main-nav ul li ul, body { border-color: <?php echo esc_attr( get_theme_mod('travelify_menu_color', '#439f55') ); ?>; }
+		#site-generator .copyright a:focus { color: <?php echo esc_attr( $link_hover_color ); ?>; }
+        #main-nav { background: <?php echo esc_attr( $menu_color ); ?>; border-color: <?php echo esc_attr( $menu_color ); ?>; }
+        #main-nav ul li ul, body { border-color: <?php echo esc_attr( $menu_color ); ?>; }
 		#main-nav a:hover,
 		#main-nav a:focus,
 		#main-nav ul li.current-menu-item a,
@@ -710,14 +763,14 @@ function travelify_customizer_css() {
 		#main-nav li:focus-within > a,
 		#main-nav ul ul :hover > a,
 		#main-nav ul ul :focus-within > a,
-		#main-nav a:focus { background: <?php echo esc_attr( get_theme_mod('travelify_menu_hover_color', '#439f55') ); ?>; }
+		#main-nav a:focus { background: <?php echo esc_attr( $menu_hover_color ); ?>; }
 		#main-nav ul li ul li a:hover,
 		#main-nav ul li ul li a:focus,
 		#main-nav ul li ul li:hover > a,
 		#main-nav ul li ul li:focus-within > a,
-		#main-nav ul li.current-menu-item ul li a:hover
-		#main-nav ul li.current-menu-item ul li a:focus { color: <?php echo esc_attr( get_theme_mod('travelify_menu_hover_color', '#439f55') ); ?>; }
-        .entry-content { color: <?php echo esc_attr( get_theme_mod('travelify_entry_color', '#1D1D1D') ); ?>; }
+		#main-nav ul li.current-menu-item ul li a:hover,
+		#main-nav ul li.current-menu-item ul li a:focus { color: <?php echo esc_attr( $menu_hover_color ); ?>; }
+        .entry-content { color: <?php echo esc_attr( $entry_color ); ?>; }
 		input[type="reset"],
 		input[type="button"],
 		input[type="submit"],
@@ -730,14 +783,14 @@ function travelify_customizer_css() {
 		.wp-pagenavi .current,
 		.wp-pagenavi a:hover,
 		.wp-pagenavi a:focus {
-            background: <?php echo esc_attr( get_theme_mod('travelify_element_color', '#57ad68') ); ?>;
-            border-color: <?php echo esc_attr( get_theme_mod('travelify_element_color', '#57ad68') ); ?> !important;
+            background: <?php echo esc_attr( $element_color ); ?>;
+            border-color: <?php echo esc_attr( $element_color ); ?> !important;
         }
 		::selection,
-		.back-to-top:focus-within a { background: <?php echo esc_attr( get_theme_mod('travelify_element_color', '#57ad68') ); ?>; }
-        blockquote { border-color: <?php echo esc_attr( get_theme_mod('travelify_element_color', '#439f55') ); ?>; }
+		.back-to-top:focus-within a { background: <?php echo esc_attr( $element_color ); ?>; }
+        blockquote { border-color: <?php echo esc_attr( $element_color ); ?>; }
 		#controllers a:hover,
-		#controllers a.active { color: <?php echo esc_attr( get_theme_mod('travelify_element_color', ' #439f55') ); ?>; }
+		#controllers a.active { color: <?php echo esc_attr( $element_color ); ?>; }
 		input[type="reset"]:hover,
 		input[type="reset"]:focus,
 		input[type="button"]:hover,
@@ -753,8 +806,8 @@ function travelify_customizer_css() {
 		ul.default-wp-page li a:hover,
 		ul.default-wp-page li a:focus,
 		ul.default-wp-page li a:active {
-            background: <?php echo esc_attr( get_theme_mod('travelify_element_hover_color', '#439f55') ); ?>;
-            border-color: <?php echo esc_attr( get_theme_mod('travelify_element_hover_color', '#439f55') ); ?>;
+            background: <?php echo esc_attr( $element_hover ); ?>;
+            border-color: <?php echo esc_attr( $element_hover ); ?>;
         }
     </style>
     <?php
@@ -777,30 +830,30 @@ function travelify_customize_preview_js() {
  */
 function travelify_theme_options_validate( $options ) {
 	global $travelify_theme_options_settings, $travelify_theme_options_defaults;
-	$input_validated = $travelify_theme_options_settings;
-	$input = array();
-	$input = $options;
-        $input_validated = $input;
+	$input           = is_array( $options ) ? $options : array();
+	$input_validated = $input;
 
-   	if ( isset( $input[ 'featured_post_slider' ] ) ) {
+	if ( isset( $input['featured_post_slider'] ) && is_array( $input['featured_post_slider'] ) ) {
+		$slide_count = count( $input['featured_post_slider'] );
 
-            $slide_count = count( $input[ 'featured_post_slider' ] );
-
-            // Slider settings updation
-            $input_validated[ 'slider_quantity' ] = $slide_count > 0 ? $slide_count : 3;
-        }
+		// Slider settings updation
+		$input_validated['slider_quantity'] = $slide_count > 0 ? $slide_count : 3;
+	}
 
 	// Layout settings verification
-	if (isset($input['reset_layout'])) {
-            $input_validated['reset_layout'] = 0;
-        }
-        if (0 == $input['reset_layout']) {
-            if (isset($input['default_layout'])) {
-                $input_validated['default_layout'] = $input['default_layout'];
-            }
-        } else {
-            $input_validated['default_layout'] = $travelify_theme_options_defaults['default_layout'];
-        }
+	$reset_layout = isset( $input['reset_layout'] ) ? $input['reset_layout'] : 0;
+
+	if ( isset( $input['reset_layout'] ) ) {
+		$input_validated['reset_layout'] = 0;
+	}
+
+	if ( ! $reset_layout ) {
+		if ( isset( $input['default_layout'] ) ) {
+			$input_validated['default_layout'] = $input['default_layout'];
+		}
+	} else {
+		$input_validated['default_layout'] = $travelify_theme_options_defaults['default_layout'];
+	}
 
         //Clearing the theme option cache
 	    if( function_exists( 'travelify_themeoption_invalidate_caches' ) ) travelify_themeoption_invalidate_caches();
