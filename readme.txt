@@ -1,16 +1,83 @@
 === Travelify ===
-Theme Name: Travelify
-Theme URI: http://colorlib.com/wp/travelify/
-Author: Colorlib
-Author URI: http://colorlib.com/wp/
-Description: Travelify is a clan, simple and fully responsive WordPress WooCommerce theme that looks awesome on any device. It adjusts automatically to any screen size including tablets and smartphones as well as Retina displays. Theme is built using HTML5 / CSS3 and is SEO friendly. This WordPress theme was built with travel, adventures, languages and nature in mind but it can be used for anything so be creative and unleash its full potential in blogging, eCommerce, business and other websites. Along the awesome design this theme is customizable via a simple but yet powerful theme options. Some of the nicest features are featured post slider, social icons, custom logo, translation ready (compatible with WPML plugin) and many more. This theme out-of-the-box plays nicely with WooCommerce, Breadcrumb NavXT, WP-PageNavi, Contact Form 7 and other popular plugins. Theme available in English, French, German, Hungarian, Italian, Spanish, Dutch, Hebrew, Slovak, Turkish, Swedish, Brazilian Portuguese, Polish, Finnish, Bulgarian, Persian (Farsi), Greek, Russian and Chinese.
-Version: 3.0.9
+
+Contributors: colorlib
+Requires at least: 6.0
+Tested up to: 7.0
+Requires PHP: 7.4
+Stable tag: 3.1.0
 License: GNU General Public License v2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Tags: white, light, green, custom-background, custom-header, custom-menu, fluid-layout, featured-images, full-width-template, left sidebar, right sidebar, one-column, two columns, three-columns, rtl-language-support, sticky-post, theme-options, threaded-comments, translation-ready
-Text Domain: travelify
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Tags: blog, e-commerce, photography, two-columns, left-sidebar, right-sidebar, full-width-template, custom-background, custom-colors, custom-header, custom-logo, custom-menu, editor-style, featured-images, footer-widgets, sticky-post, theme-options, threaded-comments, translation-ready, rtl-language-support, block-styles, wide-blocks
+
+A clean, responsive travel and blogging theme with a featured post slider, flexible sidebars and WooCommerce support.
+
+== Description ==
+
+Travelify is a clean, responsive travel and blogging theme that looks good on any screen. It ships a full-width featured post slider, a widgetised left or right sidebar you can set globally or per post, footer widgets, social icons and Customizer options for colours, header and footer with live preview.
+
+The theme's own JavaScript runs without jQuery, the Ubuntu webfont is bundled rather than fetched from a third party, and the front end is built on HTML5 with block editor styles. Travelify is WooCommerce ready, SEO friendly, translation ready and comes with nineteen bundled translations. It also plays nicely with Breadcrumb NavXT, WP-PageNavi and Contact Form 7.
+
+== Installation ==
+
+1. In your WordPress dashboard go to Appearance > Themes and click "Add New".
+2. Search for "Travelify", then install and activate it.
+3. Go to Appearance > Customize to set the logo, colours, layout and featured slider.
+
+To install manually, download the zip, unzip it and upload the `travelify` folder to `wp-content/themes/`, then activate the theme under Appearance > Themes.
+
+== Frequently Asked Questions ==
+
+= How do I set up the featured slider? =
+
+Give each post or page you want to feature a featured image, then add its post ID under Appearance > Customize > Slider Options. Post IDs are shown in the last column of the All Posts table. Posts without a featured image are skipped. The recommended image size is 1018x460 pixels.
+
+= How do I add my logo? =
+
+Upload it under Appearance > Customize > Site Identity, then set Header Options > Show to "Header Logo Only".
+
+= Can I use a different sidebar layout on one post? =
+
+Yes. Each post and page has a "Select layout" box in the editor that overrides the global setting from Appearance > Customize > Layout Options.
+
+== Copyright ==
+
+Travelify WordPress Theme, Copyright 2013-2026 Colorlib
+Travelify is distributed under the terms of the GNU GPL v2 or later.
+
+This theme is based on the Attitude WordPress theme by Theme Horse,
+https://wordpress.org/themes/attitude, licensed under the GPL v2 or later.
+
+Bundled resources:
+
+* Ubuntu font, Copyright 2010-2011 Canonical Ltd
+  Licensed under the Ubuntu Font Licence 1.0
+  https://ubuntu.com/legal/font-licence
+
+* Genericons Neue, Copyright Automattic
+  Licensed under the GPL
+  https://github.com/Automattic/genericons-neue
+
+* Images bundled with the theme (screenshot.jpg) were created by the theme
+  author and are licensed under the GPL.
 
 == Changelog ==
+
+= 3.1.0 =
+* Fixed the mobile menu, which had been missing entirely: below 768px the stylesheet hid the navigation and showed a drop-down that was never built, leaving no way to navigate the site on a phone. There is now a real toggle button, expandable sub-menus, Escape to close and a no-JavaScript fallback
+* Security: the per-post layout box saved whatever was submitted without validating it, and the FeedBurner redirect passed a stored option straight to header(), where a value saved before the option was sanitised could inject response headers. Both are now validated
+* Security: colours are re-validated when they are printed, so a theme mod saved by an older version cannot break out of the style block, and the remaining Customizer sanitizers coerce to the types their settings actually hold
+* Security: escaped output that was being printed raw, including the header logo URL, the page title and the Customizer control labels
+* The theme's JavaScript no longer uses jQuery. jQuery Cycle, TinyNav, cloneya, jQuery UI sortable and html5shiv are all gone; the slider, back to top and Customizer slide repeater are plain DOM code and load in the footer
+* The featured slider honours prefers-reduced-motion, pauses while the tab is hidden, has a keyboard- and screen-reader-addressable pager, and skips posts with no featured image instead of cycling through a blank pane
+* The Ubuntu font is bundled with the theme instead of being fetched from Google Fonts on every page load, which keeps visitor IP addresses off a third-party server
+* The logo now uses WordPress' own custom logo, so it gets srcset, cropping and a live preview; a logo saved in the old theme option is migrated automatically
+* Added block editor support: block styles, wide and full alignment, responsive embeds, custom line height, spacing and units, and an editor stylesheet that matches the front end instead of importing the whole layout
+* Added WooCommerce product gallery zoom, lightbox and slider support
+* Accessibility: pinch zoom is no longer blocked, each view has exactly one h1 in the right place, author, date and post-type archives finally get a heading, and the menu and slider controls are real buttons with proper labels and focus styles
+* Featured images and post thumbnails now serve the cropped sizes the theme registers; it had been falling back to the full-size upload
+* Colour changes in the Customizer preview now cover hover and focus states as well
+* Verified on WordPress 7.0 and PHP 8.5 with no notices; PHP compatibility checked from 7.4 to 8.5
+* Removed the obsolete Grunt toolchain and the unused TGM Plugin Activation library, and optimised the screenshot from 1.1 MB to 347 KB
 
 = 3.0.9 =
 * Improved browser compatibility detection
@@ -18,94 +85,33 @@ Text Domain: travelify
 * Enhanced HTML5 shim loading for better performance and compatibility with modern browsers
 * Improved code for better PHP 8.x and WordPress 6.8 compatibility
 
-== Copyright notice ==
+= 3.0.8 =
+* WP.org review
+* Fixed extra closing bracket in style.css
 
-* Author: Aigars Silkalns
-* Author URI: http://colorlib.com/wp/
-* License: GNU General Public License v3.0
-* License URI: http://www.gnu.org/licenses/gpl.html
-* Travelify theme, Copyright 2014-2015 http://colorlib.com
-* Travelify WordPress theme is distributed under the terms of the GNU GPL
-* Travelify is based on Underscores http://underscores.me/, (C) 2012-2015 Automattic, Inc.
+= 3.0.7 =
+* WP.org review
 
-== Additional Notes ==
+= 3.0.6 =
+* Added wp_body_open
+* Added unminified scripts and styles
 
-This theme is based on Attitude WordPress theme by Theme Horse. More about this amazing theme you can read on http://wordpress.org/themes/attitude
+= 3.0.5 =
+* Improved accessibility with keyboard navigation
 
-The theme is released for free under the terms of the GNU General Public License version 2
-and some parts under their respective licenses.
-In general words, feel free and encouraged to use, modify and redistribute this theme however you like.
-You may remove any copyright references (unless required by third party components) and crediting is not necessary.
-The theme is offered free of charge. If someone asked money for it, someone just tricked you.
+= 3.0.4 =
+* Small bug fixes and improvements
 
-== Installation ==
+= 3.0.3 =
+* Added TGMPA
 
-Manual installation:
+= 3.0.2 =
+* Fixed problems with top navigation on mobile
 
-1. Upload the `travelify` folder to the `/wp-content/themes/` directory
+= 3.0.1 =
+* Prepared theme for WordPress 4.4
+* Removed deprecated wp_title fallback
 
-Activiation and Use
-
-1. Activate the Theme through the 'Themes' menu in WordPress
-2. See Appearance -> Theme Options to change theme specific options
-
-== License ==
-
-Unless otherwise specified, all the theme files, scripts and images are licensed under GNU General Public License version 2, see file license.txt.
-The exceptions to this license are as follows:
-* TGM Plugin Activation library (https://github.com/thomasgriffin/TGM-Plugin-Activation) licensed under GNU General Public License v2.0 or later
-* [html5shiv.js](https://github.com/aFarkas/html5shiv) by Alexander Farkas licensed under a dual license system (MIT or GPL version 2)
-* [jquery-cloneya.js](https://github.com/Yapapaya/jquery-cloneya) by Saurabh Shukla licensed under the MIT license
-* [jquery-cycle.js](http://jquery.malsup.com/cycle/) by M. Alsup licensed under a dual license system (MIT and GPL)
-* [TinyNav.js](http://tinynav.com/) by @viljamis licensed under MIT license
-* Genericons font(https://github.com/Automattic/genericons-neue) is licensed under GPL
-
-= Incorporated Code Copyright Attribution =
-* Travelify WordPress Theme incorporates code from Attitude WordPress Theme, by Theme Horse
-  License: GPLv2 or later License URI: http://www.gnu.org/licenses/gpl-2.0.htm
-
-= Images bundled with the theme =
-* screenshot.png :
-	* green-mountains-and-flowing-river.jpg - Created/Taken by theme author
-  	Licensed under GPL
-  	
-	* panoramic-view-of-sea-against-blue-sky.jpg - Created/Taken by theme author
-  	Licensed under GPL
-
-== Theme Notes ==
-More about this theme you can find in the following link.
-http://colorlib.com/wp/themes/travelify/
-
-You can drop your queries in our contact form in the following link.
-http://colorlib.com/wp/contact-us/
-
-== Supported Browser ==
-Mozilla, Chrome, Safari, IE
-
-== How to use featured Post Slider? ==
-How to use the featured slider?
-* Create Post or Page and add featured image to it.
-* Add all the Post ID that you want to use in the featured slider. Post ID can be found at All Posts table in last column
-* Featured Slider will show featured images, Title and excerpt of the respected added post IDs.
-* The recommended image size is 1018px x 460px.
-
-== Post ID shown in the All Pages/Posts Table==
-This theme shows the post ID of the pages/posts in the all pages/posts table in the dashboard.
-
-== Custom Logo ==
-This theme supports custom logo for the header part.
-It is disabled by default and supports user defined images for logo if enabled.
-You can edit this from Appearance->Theme Options->Main Options->Header Options.
-
-== Page Templates ==
-
-This theme features 3 different blog templates.
-- template-blog-full-content.php – Blog page template to show full post content in the blog page.
-- template-blog-large-image.php Blog page template to show large (670px x 300px) featured image and post excerpt in the blog page.
-- template-blog-medium-image.php Blog page template to show medium size (230px x 230px) featured image and post excerpt in the blog page.
-
-You can select these templates via Page Attributes when creating new page inside WordPress Dashboard.
-
-== Other Options ==
-For more instruction you can visit the support page of Travelify at http://colorlib.com/wp/support/travelify/
-If you have still any other questions about the theme you can email at info@colorlib.com for free support.
+= 3.0 =
+* Removed Options Framework in favour of the WordPress Customizer. This update might break child themes
+* Other code cleanup

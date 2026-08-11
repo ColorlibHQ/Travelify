@@ -3,19 +3,27 @@ Theme Name: Travelify
 Theme URI: https://colorlib.com/wp/travelify/
 Author: Colorlib
 Author URI: https://colorlib.com/wp/
-Description: Travelify is a clean, simple, responsive and customizable WordPress WooCommerce theme that looks awesome on any device. It adjusts automatically to any screen size including tablets and smartphones as well as Retina displays. Theme is built using HTML5 / CSS3 and is SEO friendly. This WordPress theme was built with travel, adventures, languages and nature in mind but it can be used for anything so be creative and unleash its full potential in blogging, ecommerce, business and other websites. Along the awesome design this theme is customizable via a simple but yet powerful theme options. Some of the nicest features are featured post slider, social icons, custom logo, translation ready (compatible with WPML plugin) and many more. This theme out-of-the-box plays nicely with WooCommerce, Breadcrumb NavXT, WP-PageNavi, Contact Form 7 and other popular plugins. Theme available in English, French, German, Hungarian, Italian, Spanish, Dutch, Hebrew, Slovak, Turkish, Swedish, Brazilian Portuguese, Polish, Finnish, Bulgarian, Persian (Farsi), Greek, Russian and Chinese.
-Version: 3.0.9
-Tested up to: 6.8
+Description: Travelify is a clean, responsive travel and blogging theme that looks good on any screen. It ships a full-width featured post slider, a widgetised left or right sidebar you can set globally or per post, footer widgets, social icons and Customizer options for colours, header and footer with live preview. The theme's own JavaScript runs without jQuery, the Ubuntu webfont is bundled rather than fetched from a third party, and the front end is built on HTML5 with block editor styles. Travelify is WooCommerce ready, SEO friendly, translation ready and comes with nineteen bundled translations. It also plays nicely with Breadcrumb NavXT, WP-PageNavi and Contact Form 7.
+Version: 3.1.0
+Requires at least: 6.0
+Tested up to: 7.0
 Requires PHP: 7.4
 License: GNU General Public License v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Tags: grid-layout, footer-widgets, education, entertainment, photography, featured-images, custom-menu, editor-style, custom-background, threaded-comments, custom-header
+Tags: blog, e-commerce, photography, two-columns, left-sidebar, right-sidebar, full-width-template, custom-background, custom-colors, custom-header, custom-logo, custom-menu, editor-style, featured-images, footer-widgets, sticky-post, theme-options, threaded-comments, translation-ready, rtl-language-support, block-styles, wide-blocks
 Text Domain: travelify
 */
 
 /*
-Travelify WordPress Theme, Copyright (C) 2013-2025, Colorlib
-Travelify is distributed under the terms of the GNU GPL
+Travelify WordPress Theme, Copyright (C) 2013-2026, Colorlib
+Travelify is distributed under the terms of the GNU GPL v2 or later.
+
+This theme is based on the Attitude WordPress theme by Theme Horse.
+
+Bundled resources:
+  Ubuntu font, Copyright 2010-2011 Canonical Ltd, licensed under the
+  Ubuntu Font Licence 1.0 - https://ubuntu.com/legal/font-licence
+  Genericons Neue, Copyright Automattic, licensed under the GPL
 */
 
 /* =Reset

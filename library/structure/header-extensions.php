@@ -137,32 +137,28 @@ function travelify_headerdetails() {
 			if( !empty( $header_image ) ) :?>
 				<img src="<?php echo esc_url( $header_image ); ?>" class="header-image" width="<?php echo esc_attr(get_custom_header()->width); ?>" height="<?php echo esc_attr(get_custom_header()->height); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>">
 			<?php endif; ?>
-	<?php
-		if ( has_nav_menu( 'primary' ) ) {
-			$args = array(
-				'theme_location'    => 'primary',
-				'container'         => '',
-				'items_wrap'        => '<ul class="root">%3$s</ul>'
-			);
-			echo '<nav id="main-nav" class="clearfix">
-					<div class="container clearfix">';
-				wp_nav_menu( $args );
-			echo '</div><!-- .container -->
-					</nav><!-- #main-nav -->';
-		}
-		else {
-			echo '<nav id="main-nav" class="clearfix">
-					<div class="container clearfix">';
-				wp_nav_menu( array( 
+	<nav id="main-nav" class="clearfix" aria-label="<?php esc_attr_e( 'Primary Menu', 'travelify' ); ?>">
+		<div class="container clearfix">
+			<?php
+			/*
+			 * One call for both cases: with no menu assigned, fallback_cb lists
+			 * pages instead, and travelify_wp_page_menu() rewrites that markup
+			 * to the same <ul class="root"> the stylesheet and functions.js
+			 * expect.
+			 */
+			wp_nav_menu(
+				array(
 					'theme_location' => 'primary',
+					'container'      => '',
 					'fallback_cb'    => 'wp_page_menu',
-					'items_wrap'     => '<ul class="root">%3$s</ul>',
-					'menu_class'     => 'root'
-				) );
-			echo '</div><!-- .container -->
-					</nav><!-- #main-nav -->';
-		}
-	?>
+					'items_wrap'     => '<ul id="%1$s" class="root">%3$s</ul>',
+					'menu_class'     => 'root',
+					'menu_id'        => 'travelify-primary-menu',
+				)
+			);
+			?>
+		</div><!-- .container -->
+	</nav><!-- #main-nav -->
 		<?php
 		if( is_home() || is_front_page() ) {
 			if( "0" == $options[ 'disable_slider' ] ) {
