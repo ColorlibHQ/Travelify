@@ -217,18 +217,19 @@ function travelify_options_register_theme_customizer($wp_customize)
         'description' => esc_html__('Section to update theme options for header', 'travelify'),
         'panel' => 'travelify_main_options'
     ));
+        /*
+         * The logo itself now lives in core's Site Identity section
+         * (add_theme_support( 'custom-logo' )), which handles srcset, cropping
+         * and selective refresh. The old option is still registered so saved
+         * values survive and travelify_headerdetails() can fall back to them,
+         * but it is no longer an editable control.
+         */
         $wp_customize->add_setting('travelify_theme_options[header_logo]', array(
             'default' => $travelify_theme_options_defaults['header_logo'],
             'type' => 'option',
             'capability' => 'edit_theme_options',
             'sanitize_callback' => 'esc_url_raw'
         ));
-        $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'travelify_theme_options[header_logo]', array(
-            'label' => esc_html__('Header Logo', 'travelify'),
-            'section' => 'travelify_header_options',
-            'mime_type' => 'image',
-            'settings' => 'travelify_theme_options[header_logo]'
-        )));
 
         $wp_customize->add_setting('travelify_theme_options[header_show]', array(
             'default' => $travelify_theme_options_defaults['header_show'],
@@ -238,6 +239,7 @@ function travelify_options_register_theme_customizer($wp_customize)
         $wp_customize->add_control('travelify_theme_options[header_show]', array(
             'type' => 'radio',
             'label' => esc_html__('Show', 'travelify'),
+            'description' => esc_html__('Upload the logo itself under Site Identity.', 'travelify'),
             'section' => 'travelify_header_options',
             'choices' => array(
                 'header-logo' => esc_html__('Header Logo Only', 'travelify'),

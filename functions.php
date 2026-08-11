@@ -159,8 +159,11 @@ if ( ! function_exists( 'travelify_setup' ) ) :
 
 		/**
 		 * This theme supports add_editor_style
+		 *
+		 * The bundled font goes in first so the editor uses Ubuntu for
+		 * headings, exactly like the front end.
 		 */
-		add_editor_style();
+		add_editor_style( array( 'library/css/fonts.css', 'editor-style.css' ) );
 	}
 endif; // travelify_setup
 
