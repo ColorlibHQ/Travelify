@@ -46,8 +46,8 @@ function travelify_get_sidebar_layouts() {
 		'default-sidebar'       => array(
 			'id'        => 'travelify_sidebarlayout',
 			'value'     => 'default',
-			/* translators: %s: link to the Customizer layout options. */
 			'label'     => sprintf(
+				/* translators: %s: link to the Customizer layout options. */
 				esc_html__( 'Default Layout Set in %s', 'travelify' ),
 				'<a href="' . esc_url( admin_url( 'customize.php?autofocus[section]=travelify_layout_options' ) ) . '">' . esc_html__( 'Theme Settings', 'travelify' ) . '</a>'
 			),

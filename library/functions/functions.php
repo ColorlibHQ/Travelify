@@ -54,7 +54,13 @@ function travelify_scripts_styles_method() {
 		'travelify_functions',
 		'travelifyScreenReaderText',
 		array(
-			'menu'     => esc_html__( 'Menu', 'travelify' ),
+			/*
+			 * Deliberately reusing the nav menu location's label rather than a
+			 * fresh "Menu" string: this one is already translated in all
+			 * nineteen bundled locales, and it is the only new string that is
+			 * visible rather than screen-reader-only.
+			 */
+			'menu'     => esc_html__( 'Primary Menu', 'travelify' ),
 			'expand'   => esc_html__( 'Open sub-menu of', 'travelify' ),
 			'collapse' => esc_html__( 'Close sub-menu of', 'travelify' ),
 		)

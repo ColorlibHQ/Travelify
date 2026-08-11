@@ -100,7 +100,16 @@
 		toggle.type = 'button';
 		toggle.setAttribute( 'aria-expanded', 'false' );
 		toggle.setAttribute( 'aria-controls', menu.id || 'travelify-primary-menu' );
-		toggle.innerHTML = '<span class="menu-toggle-icon" aria-hidden="true"></span><span class="menu-toggle-text">' + ( strings.menu || 'Menu' ) + '</span>';
+		var label = document.createElement( 'span' );
+		label.className = 'menu-toggle-text';
+		label.textContent = strings.menu || 'Menu';
+
+		var icon = document.createElement( 'span' );
+		icon.className = 'menu-toggle-icon';
+		icon.setAttribute( 'aria-hidden', 'true' );
+
+		toggle.appendChild( icon );
+		toggle.appendChild( label );
 
 		if ( ! menu.id ) {
 			menu.id = 'travelify-primary-menu';
@@ -133,7 +142,9 @@
 				'aria-label',
 				( strings.expand || 'Open sub-menu of' ) + ' ' + ( link ? link.textContent.trim() : '' )
 			);
-			button.innerHTML = '<span aria-hidden="true"></span>';
+			var chevron = document.createElement( 'span' );
+			chevron.setAttribute( 'aria-hidden', 'true' );
+			button.appendChild( chevron );
 
 			button.addEventListener( 'click', function () {
 				var open = item.classList.toggle( 'submenu-open' );
