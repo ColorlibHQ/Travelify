@@ -2232,11 +2232,22 @@ article {
 	#main-nav ul.root li.submenu-open > ul li {
 		border: none;
 	}
-	#main-nav ul.root li.submenu-open > ul a,
-	#main-nav ul.root li.submenu-open > ul li.current-menu-item a {
+	/* The desktop dropdown paints its links white-on-white; inside the mobile
+	   menu they sit on the nav bar instead, so clear the background as well as
+	   setting the colour or the text is invisible. */
+	#main-nav ul.root li.submenu-open > ul li a,
+	#main-nav ul.root li.submenu-open > ul li.current-menu-item a,
+	#main-nav ul.root li.submenu-open > ul li a:hover,
+	#main-nav ul.root li.submenu-open > ul li a:focus {
+		background: transparent;
+		box-shadow: none;
 		color: #fff;
 		padding-left: 28px;
 		font-size: 13px;
+	}
+	#main-nav ul.root li.submenu-open > ul li a:hover,
+	#main-nav ul.root li.submenu-open > ul li a:focus {
+		background: rgba(0, 0, 0, 0.15);
 	}
 	#main-nav .submenu-toggle {
 		display: block;
