@@ -72,6 +72,8 @@ Unless otherwise specified, all the theme files, scripts and images are licensed
 * The logo now uses WordPress' own custom logo, so it gets srcset, cropping and a live preview; a logo saved in the old theme option is migrated automatically
 * Added block editor support: block styles, wide and full alignment, responsive embeds, custom line height, spacing and units, and an editor stylesheet that matches the front end instead of importing the whole layout
 * Added WooCommerce product gallery zoom, lightbox and slider support
+* Accessibility: the default colour palette now meets WCAG AA contrast. The menu, link and button greens are a shade deeper (#57ad68 became #3f7f4b, #439f55 became #368145) and the greys used for meta, footer credits and form fields were darkened, so every text and background pair the theme paints clears 4.5:1. Sites that already set their own colours in the Customizer are unaffected
+* Accessibility: keyboard focus is visible again. A blanket `:focus { outline: 0 }` had removed the browser's focus ring, leaving elements that already carry the focus background -- the current menu item, for one -- with no indicator at all
 * Accessibility: pinch zoom is no longer blocked, each view has exactly one `h1` in the right place, author, date and post-type archives finally get a heading, and the menu and slider controls are real buttons with proper labels and focus styles
 * Featured images and post thumbnails now serve the cropped sizes the theme registers; it had been falling back to the full-size upload
 * Colour changes in the Customizer preview now cover hover and focus states as well
