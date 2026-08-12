@@ -1,0 +1,245 @@
+/*
+ * Styles for Travelify's custom Customizer controls.
+ *
+ * Loaded only on customize_controls_enqueue_scripts, so none of it reaches the
+ * front end or the rest of wp-admin.
+ *
+ * The controls used to lay out with inline-block and floats, which left rows
+ * breaking differently depending on how many buttons they happened to show --
+ * the slide rows in particular put the label on its own line or beside the
+ * field depending on whether the add button was visible. Everything here is
+ * flex or grid so a row's layout does not depend on its content.
+ */
+
+/* -------------------------------------------------- Featured slider control */
+
+#featuredslider h3 {
+	margin: 0 0 12px;
+	font-size: 14px;
+}
+
+.featured-slider-sortable {
+	margin: 0 0 12px;
+	padding: 0;
+	list-style: none;
+}
+
+.featured-slider-sortable li {
+	display: grid;
+	/* field | edit | add | remove, with the label spanning its own row above.
+	   The action columns keep their width even when the button inside them is
+	   hidden, so every row lines up whether or not it shows add/remove. */
+	grid-template-columns: 1fr 34px 34px 34px;
+	gap: 6px;
+	align-items: center;
+	margin: 0 0 8px;
+	padding: 8px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 3px;
+}
+
+.featured-slider-sortable li label.handle {
+	grid-column: 1 / -1;
+}
+
+/* The Customizer injects a notifications container into each row. It is empty
+   and zero-height, but as a grid item it would silently consume the first
+   column and shift the field and buttons one cell to the right. */
+.featured-slider-sortable li > .customize-control-notifications-container {
+	grid-column: 1 / -1;
+	margin: 0;
+}
+
+.featured-slider-sortable li.is-dragging {
+	opacity: 0.6;
+	border-style: dashed;
+}
+
+.featured-slider-sortable li label.handle {
+	margin: 0;
+	padding: 0;
+	font-weight: 600;
+	line-height: 1.4;
+	cursor: move;
+}
+
+.featured-slider-sortable li input[type="text"] {
+	box-sizing: border-box;
+	width: 100%;
+	height: 32px;
+	min-height: 32px;
+	margin: 0;
+	text-align: center;
+}
+
+/* The three action buttons share one square footprint matching the field. */
+.featured-slider-sortable li .button,
+.featured-slider-sortable li .button-primary {
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	min-width: 34px;
+	height: 32px;
+	min-height: 32px;
+	padding: 0;
+	line-height: 1;
+	text-align: center;
+	text-decoration: none;
+}
+
+.featured-slider-sortable li .slider_edit .dashicons-edit:before {
+	font: normal 16px/1 dashicons;
+	speak: never;
+	-webkit-font-smoothing: antialiased;
+}
+
+/* Hidden buttons keep their grid cell, so the columns never shift. */
+.featured-slider-sortable li .clone,
+.featured-slider-sortable li:first-child .delete {
+	visibility: hidden;
+}
+
+.featured-slider-sortable li:last-child .clone {
+	visibility: visible;
+}
+
+#featuredslider .slider-note {
+	margin: 0 0 0 18px;
+	padding: 0;
+	list-style: square;
+}
+
+#featuredslider .slider-note li {
+	margin-bottom: 6px;
+}
+
+/* --------------------------------------------------- Layout picker control */
+
+.customize-control-radio-image .image {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 10px;
+	margin: 12px 0 0;
+}
+
+/* Block, not grid: as grid items the radio would be stretched to the column
+   width and render as an oval, and the caption would be pushed onto its own
+   row. The cards still line up because the container grid equalises row
+   heights. */
+.customize-control-radio-image .image label {
+	display: block;
+	box-sizing: border-box;
+	width: auto;
+	float: none;
+	margin: 0;
+	padding: 8px;
+	line-height: 1.4;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+.customize-control-radio-image .image label:hover {
+	border-color: #8c8f94;
+}
+
+.customize-control-radio-image .image label:has( input:checked ) {
+	border-color: #2271b1;
+	box-shadow: 0 0 0 1px #2271b1;
+}
+
+.customize-control-radio-image label img {
+	display: block;
+	width: 100%;
+	height: auto;
+	margin-bottom: 8px;
+	border: 0;
+	opacity: 0.6;
+}
+
+.customize-control-radio-image label:hover img,
+.customize-control-radio-image label:has( input:checked ) img {
+	opacity: 1;
+}
+
+/* Only spacing. The Customizer draws its radios with appearance:none and sizes
+   them from min-width plus an explicit height, so overriding height here (as
+   the previous stylesheet tried to, with a selector that never matched)
+   collapses the control to a 2px sliver of its own borders. */
+.customize-control-radio-image .image label input[type="radio"] {
+	margin: 0 6px 0 0;
+	vertical-align: middle;
+}
+
+.customize-control-radio-image span.radio-text {
+	display: inline;
+	width: auto;
+	word-wrap: break-word;
+	line-height: 1.3;
+	vertical-align: middle;
+}
+
+/* -------------------------------------------- Homepage categories multi-select */
+
+.customize-control-multi-select-cat select.select-multiple {
+	width: 100%;
+	min-height: 140px;
+	padding: 4px;
+}
+
+.customize-control-multi-select-cat small {
+	display: block;
+	margin-bottom: 8px;
+	color: #646970;
+}
+
+/* ------------------------------------------------ Slider timing number fields */
+
+#customize-control-travelify_theme_options-transition_duration input[type="text"],
+#customize-control-travelify_theme_options-transition_delay input[type="text"],
+#customize-control-travelify_theme_options-slider_quantity input[type="text"] {
+	width: 70px;
+	text-align: center;
+}
+
+/* ------------------------------------------------------ Important links list */
+
+.customize-control-travelify-important-links p {
+	margin: 0 0 6px;
+}
+
+.customize-control-travelify-important-links a {
+	display: block;
+	padding: 8px 10px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 3px;
+	text-decoration: none;
+}
+
+.customize-control-travelify-important-links a:hover,
+.customize-control-travelify-important-links a:focus {
+	background: #f6f7f7;
+	border-color: #8c8f94;
+}
+
+/* The section header used to be flat #00cc00, which is 1.8:1 under white
+   text. This keeps it highlighted but readable. */
+#accordion-section-travelify_important_links .accordion-section-title,
+#accordion-section-travelify_important_links .accordion-section-title:focus {
+	background-color: #2c6e3f !important;
+	color: #fff !important;
+}
+
+#accordion-section-travelify_important_links .accordion-section-title:hover {
+	background-color: #235833 !important;
+	color: #fff !important;
+}
+
+#accordion-section-travelify_important_links .accordion-section-title:after {
+	color: #fff !important;
+}

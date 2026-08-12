@@ -213,33 +213,18 @@ class Travelify_Important_Links extends WP_Customize_Control {
 
 }
 
+add_action( 'customize_controls_enqueue_scripts', 'travelify_customizer_custom_control_css' );
 /**
- * Add CSS for custom controls
+ * Styles for the theme's custom Customizer controls.
+ *
+ * A stylesheet rather than an inline <style> block so it can be cached and
+ * overridden, and so the rules are readable.
  */
 function travelify_customizer_custom_control_css() {
-	?>
-    <style>
-        .customize-control-radio-image .image.ui-buttonset input[type=radio] { height: auto; }
-        .customize-control-radio-image .image label { background: #fff; box-sizing: border-box; display: inline-block; width: 50%; float: left; line-height: 35px; padding: 5px 10px; }
-        .customize-control-radio-image label img { border: 0; height: auto; width: 100%; opacity: 0.5; }
-        .customize-control-radio-image label:hover img { opacity: 0.9; border-color: #999; }
-        .customize-control-radio-image .image{ margin: 20px 0; }
-        span.radio-text { display: inline-block; word-wrap: break-word; width: 83px; line-height: 1.2em; vertical-align: middle; }
-        .featured-slider-sortable li { margin-top: 20px; }
-        .featured-slider-sortable input[type="text"]{ width: 70px !important; }
-        .featured-slider-sortable .dashicons-edit { margin: 3px 0;}
-        .featured-slider-sortable label { cursor: move!important; display: inline-block; margin-right: 15px;}
-        #featuredslider .slider-note { list-style-type: square; margin: 0 auto; width: 80%;}
-        #customize-control-travelify_theme_options-transition_duration input[type="text"], #customize-control-travelify_theme_options-transition_delay input[type="text"], #customize-control-travelify_theme_options-slider_quantity input[type="text"]{ width: 40px !important; }
-        #customize-control-travelify_theme_options-transition_duration span, #customize-control-travelify_theme_options-transition_delay span, #customize-control-travelify_theme_options-slider_quantity span{ display: inline; margin-right: 10px; }
-        .featured-slider-sortable li a.clone { display: none; }
-        .featured-slider-sortable li:last-child  a.clone { display: inline-block; }
-        .featured-slider-sortable li:first-child  a.delete { display: none; }
-        .featured-slider-sortable li a.slider_edit { padding: 0 5px; }
-        li#accordion-section-travelify_important_links h3.accordion-section-title,
-        li#accordion-section-travelify_important_links h3.accordion-section-title:focus { background-color: #00cc00 !important; color: #fff !important; }
-        li#accordion-section-travelify_important_links h3.accordion-section-title:hover { background-color: #00b200 !important; color: #fff !important; }
-        li#accordion-section-travelify_important_links h3.accordion-section-title:after { color: #fff !important; }
-    </style><?php
+	wp_enqueue_style(
+		'travelify-customizer-controls',
+		get_template_directory_uri() . '/library/css/customizer.css',
+		array(),
+		TRAVELIFY_VERSION
+	);
 }
-add_action( 'customize_controls_print_styles', 'travelify_customizer_custom_control_css' ); ?>
