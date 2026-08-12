@@ -74,7 +74,10 @@ add_action( 'travelify_footer', 'travelify_backtotop_html', 40 );
  * Shows the back to top icon to go to top.
  */
 function travelify_backtotop_html() {
-	echo '<div class="back-to-top"><a href="#branding"></a></div>';
+	// The icon is a Genericons :before glyph, so the link needs its own text.
+	echo '<div class="back-to-top"><a href="#branding"><span class="screen-reader-text">'
+		. esc_html__( 'Back to top', 'travelify' )
+		. '</span></a></div>';
 }
 
 ?>

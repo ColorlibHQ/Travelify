@@ -61,6 +61,18 @@ if ( post_password_required() ) {
 		<p class="nocomments"><?php esc_html_e( 'Comments are closed.', 'travelify' ); ?></p>
 	<?php endif; ?>
 
-	<?php comment_form(); ?>
+	<?php
+	/*
+	 * Core defaults the reply title to an <h3>. On a post with no comments yet
+	 * there is no <h2 class="comments-title"> above it, so that would jump
+	 * straight from the entry title's h1 to an h3.
+	 */
+	comment_form(
+		array(
+			'title_reply_before' => '<h2 id="reply-title" class="comment-reply-title">',
+			'title_reply_after'  => '</h2>',
+		)
+	);
+	?>
 
 </div><!-- #comments .comments-area -->

@@ -110,28 +110,38 @@ function travelify_sidebar_layout( $post ) {
 	if ( empty( $meta ) ) {
 		$meta = 'default';
 	}
+	$layouts = travelify_get_sidebar_layouts();
+
+	// The thumbnail-less "default" choice sits above the grid. It used to be a
+	// bare <label> inside the <tr>, which is invalid table markup -- browsers
+	// hoisted it out of the table entirely and it rendered detached.
+	$default_layout = array();
+	foreach ( $layouts as $key => $field ) {
+		if ( '' === $field['thumbnail'] ) {
+			$default_layout = $field;
+			unset( $layouts[ $key ] );
+		}
+	}
 	?>
+	<div id="sidebar-metabox-default">
+		<?php if ( $default_layout ) : ?>
+			<label class="description">
+				<input type="radio" name="<?php echo esc_attr( $default_layout['id'] ); ?>" value="<?php echo esc_attr( $default_layout['value'] ); ?>" <?php checked( $default_layout['value'], $meta ); ?> />
+				&nbsp;&nbsp;<?php echo wp_kses( $default_layout['label'], array( 'a' => array( 'href' => array() ) ) ); ?>
+			</label>
+		<?php endif; ?>
+	</div>
 	<table id="sidebar-metabox" class="form-table" width="100%">
 		<tbody>
 			<tr>
-				<?php
-				foreach ( travelify_get_sidebar_layouts() as $field ) {
-					if ( '' === $field['thumbnail'] ) :
-						?>
+				<?php foreach ( $layouts as $field ) : ?>
+					<td>
 						<label class="description">
-						<input type="radio" name="<?php echo esc_attr( $field['id'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" <?php checked( $field['value'], $meta ); ?> />&nbsp;&nbsp;<?php echo wp_kses( $field['label'], array( 'a' => array( 'href' => array() ) ) ); ?>
+						<span><img src="<?php echo esc_url( $field['thumbnail'] ); ?>" width="136" height="122" alt="" /></span><br />
+						<input type="radio" name="<?php echo esc_attr( $field['id'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" <?php checked( $field['value'], $meta ); ?> />&nbsp;&nbsp;<?php echo esc_html( $field['label'] ); ?>
 						</label>
-					<?php else : ?>
-						<td>
-							<label class="description">
-							<span><img src="<?php echo esc_url( $field['thumbnail'] ); ?>" width="136" height="122" alt="" /></span><br />
-							<input type="radio" name="<?php echo esc_attr( $field['id'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" <?php checked( $field['value'], $meta ); ?> />&nbsp;&nbsp;<?php echo esc_html( $field['label'] ); ?>
-							</label>
-						</td>
-						<?php
-					endif;
-				}
-				?>
+					</td>
+				<?php endforeach; ?>
 			</tr>
 		</tbody>
 	</table>

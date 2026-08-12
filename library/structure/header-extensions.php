@@ -90,10 +90,13 @@ function travelify_headerdetails() {
 				<div id="site-logo" class="clearfix">
 					<?php
 					/*
-					 * Only the front page gets an <h1> here; on every other view
-					 * the entry title is the page heading.
+					 * The site title is the page heading only on the posts index,
+					 * where the entries are a list rather than the page itself.
+					 * is_home() covers both "posts on front" and a separate blog
+					 * page; a static front page has its own entry title, so
+					 * testing is_front_page() here would emit a second <h1>.
 					 */
-					$travelify_title_tag = ( is_home() || is_front_page() ) ? 'h1' : 'p';
+					$travelify_title_tag = is_home() ? 'h1' : 'p';
 
 					if ( 'header-text' === $options['header_show'] ) {
 						printf(

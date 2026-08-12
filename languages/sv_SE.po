@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Travelify\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/theme/travelify\n"
-"POT-Creation-Date: 2026-08-11T18:27:22+00:00\n"
+"POT-Creation-Date: 2026-08-12T07:35:28+00:00\n"
 "PO-Revision-Date: 2015-10-02 12:40+0300\n"
 "Last-Translator: Aigars Silkalns <a.silkalns@gmail.com>\n"
 "Language-Team: Color Awesomeness <info@colorawesomeness.com>\n"
@@ -120,7 +120,7 @@ msgid "Comments are closed."
 msgstr "Stängt för kommentarer."
 
 #: functions.php:86 library/functions/functions.php:63
-#: library/structure/header-extensions.php:140
+#: library/structure/header-extensions.php:143
 msgid "Primary Menu"
 msgstr "Huvudmeny"
 
@@ -729,13 +729,17 @@ msgstr "Tema av"
 msgid "Powered by"
 msgstr "Driven av"
 
+#: library/structure/footer-extensions.php:79
+msgid "Back to top"
+msgstr ""
+
 #. translators: 1: site name, 2: social network name.
-#: library/structure/header-extensions.php:228
+#: library/structure/header-extensions.php:231
 #, php-format
 msgid "%1$s on %2$s"
 msgstr ""
 
-#: library/structure/header-extensions.php:375
+#: library/structure/header-extensions.php:378
 msgid "Search Results"
 msgstr "Sökresultat"
 

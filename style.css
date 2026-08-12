@@ -823,7 +823,8 @@ a.more-link:focus {
 	font-weight: normal;
 	height: 100%;
 	padding: 6px 10px;
-	color: #777;
+	/* #767676 is the darkest grey that still clears 4.5:1 on white; #777 was 4.48:1. */
+	color: #767676;
 	text-transform: capitalize;
 	background: #fff;
 	border: none;
@@ -1595,10 +1596,12 @@ a.comment-reply-link:focus {
 #respond {
 	margin-top: 1rem;
 }
+#respond h2#reply-title,
 #respond h3#reply-title {
 	font-size: 30px;
 	font-weight: normal;
 }
+#respond h2#reply-title #cancel-comment-reply-link,
 #respond h3#reply-title #cancel-comment-reply-link {
 	margin-left: 10px;
 	margin-left: 0.71rem;
@@ -2162,7 +2165,9 @@ article {
 	.one-column-template .container,.container {
 		width: auto;
 	}
-	.comments-title,#respond h3#reply-title {
+	.comments-title,
+	#respond h2#reply-title,
+	#respond h3#reply-title {
 		font-size: 26px;
 		line-height: 32px;
 	}

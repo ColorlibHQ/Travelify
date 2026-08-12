@@ -370,8 +370,8 @@ function travelify_widgets_init() {
 		'description'   => esc_html__( 'Shows widgets at Left side.', 'travelify' ),
 		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
 		'after_widget'  => '</aside>',
-		'before_title'  => '<h3 class="widget-title">',
-		'after_title'   => '</h3>'
+		'before_title'  => '<h2 class="widget-title">',
+		'after_title'   => '</h2>'
 	) );
 
 	// Registering main right sidebar
@@ -381,8 +381,8 @@ function travelify_widgets_init() {
 		'description'   => esc_html__( 'Shows widgets at Right side.', 'travelify' ),
 		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
 		'after_widget'  => '</aside>',
-		'before_title'  => '<h3 class="widget-title">',
-		'after_title'   => '</h3>'
+		'before_title'  => '<h2 class="widget-title">',
+		'after_title'   => '</h2>'
 	) );
 
 	// Registering footer widgets
@@ -392,8 +392,8 @@ function travelify_widgets_init() {
 		'description'   => esc_html__( 'Shows widgets at footer.', 'travelify' ),
 		'before_widget' => '<div class="col-3"><aside id="%1$s" class="widget %2$s">',
 		'after_widget'  => '</aside></div>',
-		'before_title'  => '<h3 class="widget-title">',
-		'after_title'   => '</h3>'
+		'before_title'  => '<h2 class="widget-title">',
+		'after_title'   => '</h2>'
 		)
 	);
 }
