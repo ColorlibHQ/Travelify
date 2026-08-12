@@ -19,7 +19,7 @@ body {
 
 .editor-styles-wrapper a,
 body a {
-	color: #3f7f4b;
+	color: #57ad68;
 	text-decoration: none;
 }
 
@@ -27,7 +27,7 @@ body a {
 .editor-styles-wrapper a:focus,
 body a:hover,
 body a:focus {
-	color: #368145;
+	color: #439f55;
 	text-decoration: underline;
 }
 
@@ -61,7 +61,7 @@ body blockquote {
 	font-style: italic;
 	padding: 20px;
 	margin-bottom: 20px;
-	border-left: 4px solid #368145;
+	border-left: 4px solid #439f55;
 	background-color: #f9f9f9;
 }
 

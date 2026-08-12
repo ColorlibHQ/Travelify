@@ -27,7 +27,7 @@ function travelify_options_register_theme_customizer($wp_customize)
         'panel' => 'travelify_main_options'
     ));
         $wp_customize->add_setting('travelify_logo_color', array(
-            'default' => '#3f7f4b',
+            'default' => '#57ad68',
             'sanitize_callback' => 'travelify_sanitize_hexcolor'
         ));
         $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'travelify_logo_color', array(
@@ -38,7 +38,7 @@ function travelify_options_register_theme_customizer($wp_customize)
         )));
 
         $wp_customize->add_setting('travelify_logo_hover_color', array(
-            'default' => '#368145',
+            'default' => '#439f55',
             'sanitize_callback' => 'travelify_sanitize_hexcolor'
         ));
         $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'travelify_logo_hover_color', array(
@@ -49,7 +49,7 @@ function travelify_options_register_theme_customizer($wp_customize)
         )));
 
         $wp_customize->add_setting('travelify_menu_color', array(
-            'default' => '#3f7f4b',
+            'default' => '#57ad68',
             'sanitize_callback' => 'travelify_sanitize_hexcolor'
         ));
         $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'travelify_menu_color', array(
@@ -59,7 +59,7 @@ function travelify_options_register_theme_customizer($wp_customize)
         )));
 
         $wp_customize->add_setting('travelify_menu_hover_color', array(
-            'default' => '#368145',
+            'default' => '#439f55',
             'sanitize_callback' => 'travelify_sanitize_hexcolor'
         ));
         $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'travelify_menu_hover_color', array(
@@ -98,7 +98,7 @@ function travelify_options_register_theme_customizer($wp_customize)
         'panel' => 'travelify_main_options'
     ));
         $wp_customize->add_setting('travelify_element_color', array(
-            'default' => '#3f7f4b',
+            'default' => '#57ad68',
             'sanitize_callback' => 'travelify_sanitize_hexcolor'
         ));
         $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'travelify_element_color', array(
@@ -109,7 +109,7 @@ function travelify_options_register_theme_customizer($wp_customize)
         )));
 
         $wp_customize->add_setting('travelify_element_hover_color', array(
-            'default' => '#368145',
+            'default' => '#439f55',
             'sanitize_callback' => 'travelify_sanitize_hexcolor'
         ));
         $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'travelify_element_hover_color', array(
@@ -170,7 +170,7 @@ function travelify_options_register_theme_customizer($wp_customize)
         )));
 
         $wp_customize->add_setting('travelify_link_color', array(
-            'default' => '#3f7f4b',
+            'default' => '#57ad68',
             'sanitize_callback' => 'travelify_sanitize_hexcolor'
         ));
         $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'travelify_link_color', array(
@@ -181,7 +181,7 @@ function travelify_options_register_theme_customizer($wp_customize)
         )));
 
         $wp_customize->add_setting('travelify_link_hover_color', array(
-            'default' => '#368145',
+            'default' => '#439f55',
             'sanitize_callback' => 'travelify_sanitize_hexcolor'
         ));
         $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'travelify_link_hover_color', array(
@@ -751,20 +751,20 @@ function travelify_sanitize_slider( $values ) {
 function travelify_customizer_css() {
 
     // Every colour is re-validated here; see travelify_css_color().
-    $link_color         = travelify_css_color( 'travelify_link_color', '#3F7F4B' );
-    $link_hover_color   = travelify_css_color( 'travelify_link_hover_color', '#368145' );
-    $logo_color         = travelify_css_color( 'travelify_logo_color', '#3f7f4b' );
-    $logo_hover_color   = travelify_css_color( 'travelify_logo_hover_color', '#368145' );
+    $link_color         = travelify_css_color( 'travelify_link_color', '#57AD68' );
+    $link_hover_color   = travelify_css_color( 'travelify_link_hover_color', '#439f55' );
+    $logo_color         = travelify_css_color( 'travelify_logo_color', '#57ad68' );
+    $logo_hover_color   = travelify_css_color( 'travelify_logo_hover_color', '#439f55' );
     $wrapper_color      = travelify_css_color( 'travelify_wrapper_color', '#F8F8F8' );
     $social_color       = travelify_css_color( 'travelify_social_color', '#d0d0d0' );
-    $menu_color         = travelify_css_color( 'travelify_menu_color', '#3f7f4b' );
-    $menu_hover_color   = travelify_css_color( 'travelify_menu_hover_color', '#368145' );
+    $menu_color         = travelify_css_color( 'travelify_menu_color', '#57ad68' );
+    $menu_hover_color   = travelify_css_color( 'travelify_menu_hover_color', '#439f55' );
     $menu_item_color    = travelify_css_color( 'travelify_menu_item_color', '#fff' );
     $content_bg_color   = travelify_css_color( 'travelify_content_bg_color', '#fff' );
     $header_color       = travelify_css_color( 'travelify_header_color', '#1b1e1f' );
     $entry_color        = travelify_css_color( 'travelify_entry_color', '#1D1D1D' );
-    $element_color      = travelify_css_color( 'travelify_element_color', '#3f7f4b' );
-    $element_hover      = travelify_css_color( 'travelify_element_hover_color', '#368145' );
+    $element_color      = travelify_css_color( 'travelify_element_color', '#57ad68' );
+    $element_hover      = travelify_css_color( 'travelify_element_hover_color', '#439f55' );
     ?>
     <style id="travelify-customizer-css">
         a { color: <?php echo esc_attr( $link_color ); ?>; }
