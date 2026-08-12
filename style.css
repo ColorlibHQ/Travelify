@@ -668,13 +668,6 @@ a.more-link:focus {
 .social-icons ul li.twitter a:focus {
 	background: #00aced;
 }
-.social-icons ul li.google-plus a:before {
-	content: '\f218';
-}
-.social-icons ul li.google-plus a:hover,
-.social-icons ul li.google-plus a:focus {
-	background: #cd4132;
-}
 .social-icons ul li.pinterest a:before {
 	content: '\f209';
 }

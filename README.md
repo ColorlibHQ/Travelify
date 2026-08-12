@@ -72,6 +72,7 @@ Unless otherwise specified, all the theme files, scripts and images are licensed
 * The logo now uses WordPress' own custom logo, so it gets srcset, cropping and a live preview; a logo saved in the old theme option is migrated automatically
 * Added block editor support: block styles, wide and full alignment, responsive embeds, custom line height, spacing and units, and an editor stylesheet that matches the front end instead of importing the whole layout
 * Added WooCommerce product gallery zoom, lightbox and slider support
+* Removed the leftover Google+ social icon styling. The network shut down in 2019 and the theme stopped offering it as an option, but the CSS for the icon was still shipping
 * Fixed the post title appearing inside the post meta bar next to the author and date. the_title_attribute() was being called with the old the_title() argument list, so instead of returning the title for the link's title attribute it printed it to the page
 * Accessibility: the greys used for comment meta, reply links, footer credits and form fields were darkened to #727272 so they clear WCAG AA contrast; the theme's signature green is unchanged
 * Accessibility: keyboard focus is visible again. A blanket `:focus { outline: 0 }` had removed the browser's focus ring, leaving elements that already carry the focus background -- the current menu item, for one -- with no indicator at all
