@@ -169,37 +169,43 @@ class Travelify_Important_Links extends WP_Customize_Control {
    public $type = "travelify-important-links";
 
    public function render_content() {
-      //Add Theme instruction, Support Forum, Demo Link, Rating Link
+      /*
+       * Every destination here is the URL that actually serves the page, not
+       * one that redirects to it:
+       *   - colorlib.com/wp/forums/ moved to colorlibsupport.com
+       *   - wordpress.org/support/view/theme-reviews/{slug} is the pre-2015
+       *     layout and redirects to /support/theme/{slug}/reviews/
+       *   - twitter.com no longer answers; x.com does
+       * "Rate this Theme" was also listed twice, once over plain http and
+       * once pre-filtered to five-star reviews.
+       */
       $important_links = array(
-            'other_themes' => array(
-            'link' => esc_url('https://colorlib.com/'),
-            'text' => __('Other Themes', 'travelify'),
+         'other_themes'      => array(
+            'link' => 'https://colorlib.com/wp/themes/',
+            'text' => __( 'Other Themes', 'travelify' ),
          ),
-            'rate' => array(
-            'link' => esc_url('http://wordpress.org/support/view/theme-reviews/travelify?filter=5'),
-            'text' => __('Rate this Theme', 'travelify'),
+         'theme_instruction' => array(
+            'link' => 'https://colorlib.com/wp/support/travelify/',
+            'text' => __( 'Theme Instructions', 'travelify' ),
          ),
-            'theme_instruction' => array(
-            'link' => esc_url('https://colorlib.com/wp/support/travelify/'),
-            'text' => __('Theme Instructions', 'travelify'),
+         'support'           => array(
+            'link' => 'https://colorlibsupport.com/',
+            'text' => __( 'Support', 'travelify' ),
          ),
-            'rating' => array(
-            'link' => esc_url('https://wordpress.org/support/view/theme-reviews/travelify'),
-            'text' => __('Rate This Theme', 'travelify'),
+         'rate'              => array(
+            'link' => 'https://wordpress.org/support/theme/travelify/reviews/',
+            'text' => __( 'Rate this Theme', 'travelify' ),
          ),
-            'support' => array(
-            'link' => esc_url('https://colorlib.com/wp/forums/'),
-            'text' => __('Support', 'travelify'),
+         'facebook'          => array(
+            'link' => 'https://www.facebook.com/colorlib',
+            'text' => __( 'Facebook', 'travelify' ),
          ),
-            'facebook' => array(
-            'link' => esc_url('https://www.facebook.com/colorlib'),
-            'text' => __('Facebook', 'travelify'),
+         'twitter'           => array(
+            'link' => 'https://x.com/colorlib',
+            'text' => __( 'Twitter', 'travelify' ),
          ),
-            'twitter' => array(
-            'link' => esc_url('http://twitter.com/colorlib/'),
-            'text' => __('Twitter', 'travelify'),
-         )
       );
+
       foreach ( $important_links as $important_link ) {
          echo '<p><a target="_blank" rel="noopener noreferrer" href="' . esc_url( $important_link['link'] ) . '">' . esc_html( $important_link['text'] ) . '</a></p>';
       }
