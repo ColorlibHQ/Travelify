@@ -121,6 +121,10 @@ No committed test suite; regressions are visual and silent. The bar set by 3.1.0
 
 **Check contrast, not just visibility.** The mobile sub-menu shipped briefly as white-on-white: present, focusable, and completely unreadable, while `isVisible()` passed.
 
+**The palette is tuned to WCAG AA and the numbers are tight.** `#3f7f4b` / `#368145` / `#727272` were each picked as the *lightest* value clearing 4.5:1 against the three backgrounds the theme paints on -- `#fff`, `#f9f9f9` (blockquotes, inputs) and `#f8f8f8` (wrapper). Lightening any of them by a step drops below AA. The Customizer defaults in `customizer.php`, the fallbacks in `travelify_customizer_css()` and the values in `style.css`/`editor-style.css` must all agree.
+
+**Test against a populated site, not a fixture.** Running on a bare install hid all seven defects found in the 3.1.0 verification pass -- the double `h1` needs a static front page, the heading jumps need widgets, the metabox bug needs the block editor. The lab in `/Users/silkalns/Projects/colorlib-theme-lab/wp` is the quick harness; the Local site `local-wp` (`http://local-wp.local`, WooCommerce + Jetpack + the Colorlib plugins) is the realistic one. Attribute failures before fixing them: `colorlib-404-customizer` replaces the 404 template wholesale, and the unit-test content deliberately contains its own `<h1>`s and duplicate caption ids.
+
 ## Conventions
 
 - Every function prefixed `travelify_`; template-level ones wrapped in `if ( ! function_exists() )`.
