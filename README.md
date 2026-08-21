@@ -61,8 +61,12 @@ Unless otherwise specified, all the theme files, scripts and images are licensed
 
 ## Change Log
 
+**= 3.1.1 =**
+* Fixed the front page breaking where an older copy of the theme's stylesheet is still being served -- by a child theme carrying its own copy, or by a minify, cache or CDN layer holding a cached one. The slider and the mobile menu were relying on CSS rules that only exist in 3.1.0, so with an out-of-date stylesheet every slide rendered at full height down the page and the menu button did nothing. Both now set the layout they depend on from JavaScript, as the slider did before 3.1.0. If you saw this, clearing your minify or page cache will also fix it on 3.1.0
+* Corrected the 3.1.0 changelog: the pre-3.1.0 mobile menu was not missing. TinyNav shipped bundled inside the minified functions.min.js and did build a drop-down; the standalone tinynav.js in library/js was unused, which is what led to the mistaken claim. The 3.1.0 menu is still a replacement for that drop-down, not a first one
+
 **= 3.1.0 =**
-* Fixed the mobile menu, which had been missing entirely: below 768px the stylesheet hid the navigation and showed a drop-down that was never built, leaving no way to navigate the site on a phone. There is now a real toggle button, expandable sub-menus, Escape to close and a no-JavaScript fallback
+* Replaced the mobile navigation. Below 768px the old theme swapped the menu for a TinyNav drop-down with no sub-menu structure and no accessible semantics; there is now a real toggle button, expandable sub-menus, Escape to close and a no-JavaScript fallback
 * Security: the per-post layout box saved whatever was submitted without validating it, and the FeedBurner redirect passed a stored option straight to `header()`, where a value saved before the option was sanitised could inject response headers. Both are now validated
 * Security: colours are re-validated when they are printed, so a theme mod saved by an older version cannot break out of the style block, and the remaining Customizer sanitizers coerce to the types their settings actually hold
 * Security: escaped output that was being printed raw, including the header logo URL, the page title and the Customizer control labels

@@ -70,10 +70,32 @@
 		root.setAttribute( 'data-effect', effect );
 		track.style.setProperty( '--travelify-slide-duration', duration + 'ms' );
 
+		/*
+		 * Stack the slides from here rather than relying on the stylesheet.
+		 *
+		 * These four declarations are what makes this a slider at all: without
+		 * them every slide renders in normal flow and the page becomes a column
+		 * of full-height images. Leaving them to style.css means the component
+		 * silently breaks wherever that file is out of step with this one -- a
+		 * child theme that copied the parent stylesheet, a minify or CDN layer
+		 * serving a cached copy, a custom stylesheet loaded in its place. The
+		 * jQuery Cycle version this replaced set them inline for the same
+		 * reason.
+		 *
+		 * Everything cosmetic -- the transitions, the effects, the pager
+		 * colours -- stays in the stylesheet, where it can be overridden.
+		 */
+		track.style.position = 'relative';
+
 		slides.forEach( function ( slide, index ) {
 			slide.classList.remove( 'displayblock', 'displaynone' );
 			slide.classList.toggle( 'is-active', index === current );
 			slide.setAttribute( 'aria-hidden', index === current ? 'false' : 'true' );
+
+			slide.style.position = 'absolute';
+			slide.style.top = '0';
+			slide.style.left = '0';
+			slide.style.width = '100%';
 		} );
 
 		/*
@@ -102,6 +124,21 @@
 
 				dot.type = 'button';
 				dot.className = index === current ? 'active' : '';
+
+				/*
+				 * Box model only, for the same reason the slides are positioned
+				 * from here: without the stylesheet these are default buttons,
+				 * and a slider with forty of them turns into rows of grey
+				 * rectangles across the image. Colour and shape stay in CSS so
+				 * they remain themeable.
+				 */
+				dot.style.boxSizing = 'border-box';
+				dot.style.width = '10px';
+				dot.style.height = '10px';
+				dot.style.minWidth = '0';
+				dot.style.padding = '0';
+				dot.style.fontSize = '0';
+				dot.style.lineHeight = '0';
 				dot.setAttribute( 'aria-label', ( window.travelifySliderL10n && window.travelifySliderL10n.slide ? window.travelifySliderL10n.slide : 'Slide' ) + ' ' + ( index + 1 ) );
 				dot.setAttribute( 'aria-current', index === current ? 'true' : 'false' );
 

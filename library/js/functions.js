@@ -75,10 +75,11 @@
 	/**
 	 * Mobile navigation.
 	 *
-	 * The stylesheet used to hide the menu below 768px and show a <select> that
-	 * TinyNav was supposed to build -- but TinyNav was never enqueued, so the
-	 * menu simply vanished. This replaces it with a real toggle button and
-	 * expandable sub-menus.
+	 * Replaces the <select> that TinyNav built below 768px. TinyNav shipped
+	 * bundled inside the old functions.min.js -- the standalone tinynav.js in
+	 * library/js was dead code, which is easy to misread as the menu being
+	 * absent. It worked; it was just a <select> with no sub-menu structure and
+	 * no accessible semantics.
 	 */
 	function initMobileMenu() {
 		var nav = document.getElementById( 'main-nav' );
@@ -117,9 +118,45 @@
 
 		menu.parentNode.insertBefore( toggle, menu );
 
-		toggle.addEventListener( 'click', function () {
-			var open = nav.classList.toggle( 'is-open' );
+		/*
+		 * Whether the menu is on screen is decided here, not in the stylesheet.
+		 *
+		 * The CSS rules that hide the list and reveal it again on .is-open only
+		 * exist in this version of style.css. Where that file is out of step --
+		 * a child theme carrying its own copy, a minify or CDN layer serving a
+		 * cached one -- the class still toggles but nothing moves, and the
+		 * button is dead. Setting display from here means the menu opens
+		 * regardless of which stylesheet arrived.
+		 *
+		 * MOBILE_BREAKPOINT mirrors the max-width in style.css; keep them equal.
+		 */
+		var MOBILE_BREAKPOINT = 767;
+
+		function isMobile() {
+			return window.innerWidth <= MOBILE_BREAKPOINT;
+		}
+
+		function applyMenuState( open ) {
+			if ( isMobile() ) {
+				toggle.style.display = 'flex';
+				menu.style.display = open ? 'block' : 'none';
+			} else {
+				// Desktop: hand both back to the stylesheet.
+				toggle.style.display = 'none';
+				menu.style.display = '';
+			}
+		}
+
+		function setOpen( open ) {
+			nav.classList.toggle( 'is-open', open );
 			toggle.setAttribute( 'aria-expanded', open ? 'true' : 'false' );
+			applyMenuState( open );
+		}
+
+		setOpen( false );
+
+		toggle.addEventListener( 'click', function () {
+			setOpen( ! nav.classList.contains( 'is-open' ) );
 		} );
 
 		// Sub-menu toggles: hover cannot open a dropdown on a touch screen.
@@ -149,6 +186,11 @@
 			button.addEventListener( 'click', function () {
 				var open = item.classList.toggle( 'submenu-open' );
 				button.setAttribute( 'aria-expanded', open ? 'true' : 'false' );
+
+				// As above: do not depend on the stylesheet to reveal it.
+				if ( isMobile() ) {
+					submenu.style.display = open ? 'block' : 'none';
+				}
 				button.setAttribute(
 					'aria-label',
 					( open ? ( strings.collapse || 'Close sub-menu of' ) : ( strings.expand || 'Open sub-menu of' ) ) + ' ' + ( link ? link.textContent.trim() : '' )
@@ -169,8 +211,7 @@
 			}
 
 			if ( nav.classList.contains( 'is-open' ) ) {
-				nav.classList.remove( 'is-open' );
-				toggle.setAttribute( 'aria-expanded', 'false' );
+				setOpen( false );
 				toggle.focus();
 			}
 		} );
@@ -179,21 +220,24 @@
 		if ( window.matchMedia ) {
 			var desktop = window.matchMedia( '(min-width: 768px)' );
 
-			var reset = function ( query ) {
-				if ( query.matches ) {
-					nav.classList.remove( 'is-open' );
-					toggle.setAttribute( 'aria-expanded', 'false' );
+			var reset = function () {
+				setOpen( false );
 
-					Array.prototype.forEach.call( menu.querySelectorAll( '.submenu-open' ), function ( item ) {
-						item.classList.remove( 'submenu-open' );
+				Array.prototype.forEach.call( menu.querySelectorAll( '.has-submenu' ), function ( item ) {
+					item.classList.remove( 'submenu-open' );
 
-						var button = item.querySelector( '.submenu-toggle' );
+					var button = item.querySelector( '.submenu-toggle' );
+					var sub = item.querySelector( 'ul' );
 
-						if ( button ) {
-							button.setAttribute( 'aria-expanded', 'false' );
-						}
-					} );
-				}
+					if ( button ) {
+						button.setAttribute( 'aria-expanded', 'false' );
+					}
+
+					// Clear the inline display so the stylesheet governs again.
+					if ( sub ) {
+						sub.style.display = '';
+					}
+				} );
 			};
 
 			if ( desktop.addEventListener ) {
@@ -201,6 +245,10 @@
 			} else if ( desktop.addListener ) {
 				desktop.addListener( reset );
 			}
+
+			window.addEventListener( 'resize', function () {
+				applyMenuState( nav.classList.contains( 'is-open' ) );
+			} );
 		}
 	}
 

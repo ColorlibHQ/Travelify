@@ -84,7 +84,8 @@ Both are live; know which one a setting belongs to before touching it.
 
 `library/js/functions.js` and `slider.js` are **plain DOM APIs, no jQuery**, enqueued in the footer with no dependencies, versioned from `TRAVELIFY_VERSION`. Build DOM with `createElement`/`textContent`, not `innerHTML`.
 
-- **The mobile menu is theme-owned** (`initMobileMenu`). Before 3.1.0 the stylesheet hid the nav below 768px and showed a `<select>` that TinyNav was meant to build — but tinynav.js was never enqueued, so **there was no mobile navigation at all**. Don't reintroduce a `<select>`-based menu.
+- **The mobile menu is theme-owned** (`initMobileMenu`). It replaced a TinyNav `<select>`. Note that TinyNav shipped *bundled inside* the old `functions.min.js` — the standalone `library/js/tinynav.js` was never enqueued, which reads as "there was no mobile menu" if you only check the enqueues and the unminified sources. It worked; it was just a `<select>`. Don't reintroduce one.
+- **JS-driven layout must not live only in `style.css`.** `slider.js` sets the slide positioning inline and `functions.js` owns the menu's `display`, because a site can serve this version's markup against an older stylesheet — a child theme carrying its own copy of `style.css`, or a minify/CDN layer holding a cached one. 3.1.0 moved that layout into CSS and broke exactly that way (every slide full height down the page, dead menu button). Cosmetics stay in CSS; anything the component needs to *function* is set from JS. `t6-stale-css` covers this by serving the 3.0.9 stylesheet against current markup.
 - The toggle's visible label deliberately reuses the **`Primary Menu`** msgid, because that string is already translated in all nineteen locales and it's the only new visible string.
 - **`slider.js` replaces jQuery Cycle.** Every effect the Customizer offers maps through the `EFFECTS` table; ones with no CSS equivalent fall back to a cross-fade. Keep the map exhaustive — a stored value with no entry must still resolve.
 - **All slides stay `position: absolute`** and `slider.js` sets the track height from the tallest one. Making the active slide `relative` lets the track height change mid-transition, which moves the bottom-anchored pager out from under the pointer.
@@ -113,6 +114,7 @@ Display functions are wrapped in `if ( ! function_exists( 'travelify_x' ) )`. Pr
 No committed test suite; regressions are visual and silent. The bar set by 3.1.0:
 
 - WP 7.0 / PHP 8.5 with `WP_DEBUG` + `WP_DEBUG_LOG`: home, single, password-protected, page, category, tag, author, date, search, empty search, 404, feed, attachment, paged — plus admin: Customizer, block editor, widgets, menus, posts list. Target is an **empty debug.log**.
+- **Run the browser checks in WebKit as well as Chromium.** `playwright.webkit` with an iPhone device profile is the closest thing to iOS Safari available here. Everything through 3.1.0 was checked in Chromium only, and the bug that forced 3.1.1 was reported from an iPhone.
 - Exercise the option-driven paths: all five sidebar layouts globally and per post, all eleven slider effects, slider on/off, all three header modes, all three blog page templates, RTL.
 - The official [theme unit test data](https://github.com/WPTT/theme-test-data) imported and every post/page walked: no 500s, no horizontal overflow, no console errors.
 - Theme Check: **0 required, 0 warnings** (only the optional block-styles/block-patterns suggestions remain).
