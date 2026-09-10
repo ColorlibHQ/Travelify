@@ -32,7 +32,15 @@ add_action( 'travelify_footer', 'travelify_footer_info', 30 );
  * function to show the footer info, copyright information
  */
 function travelify_footer_info() {
-   echo '<div class="copyright">'.__( 'Copyright &copy;', 'travelify' ).' '.date('Y').' '.travelify_site_link().'. '.__( 'Theme by', 'travelify' ).' '.travelify_colorlib_link().' '.__( 'Powered by', 'travelify' ).' '.travelify_wp_link().'</div><!-- .copyright -->';
+	echo '<div class="copyright">'
+		. esc_html__( 'Copyright &copy;', 'travelify' ) . ' '
+		. esc_html( wp_date( 'Y' ) ) . ' '
+		. travelify_site_link() . '. ' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in the helper.
+		. esc_html__( 'Theme by', 'travelify' ) . ' '
+		. travelify_colorlib_link() . ' ' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in the helper.
+		. esc_html__( 'Powered by', 'travelify' ) . ' '
+		. travelify_wp_link() // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in the helper.
+		. '</div><!-- .copyright -->';
 }
 
 /****************************************************************************************/
@@ -45,7 +53,7 @@ add_action( 'travelify_footer', 'travelify_close_sitegenerator_div', 35 );
  */
 function travelify_footer_rightinfo() {
 		echo '<div class="footer-right">';
-		echo get_theme_mod( 'travelify_footer_textbox' );
+		echo wp_kses_post( get_theme_mod( 'travelify_footer_textbox' ) );
 		echo '</div>';
 }
 add_action( 'travelify_footer', 'travelify_footer_rightinfo', 30 );
@@ -66,7 +74,10 @@ add_action( 'travelify_footer', 'travelify_backtotop_html', 40 );
  * Shows the back to top icon to go to top.
  */
 function travelify_backtotop_html() {
-	echo '<div class="back-to-top"><a href="#branding"></a></div>';
+	// The icon is a Genericons :before glyph, so the link needs its own text.
+	echo '<div class="back-to-top"><a href="#branding"><span class="screen-reader-text">'
+		. esc_html__( 'Back to top', 'travelify' )
+		. '</span></a></div>';
 }
 
 ?>

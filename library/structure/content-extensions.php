@@ -116,11 +116,11 @@ function travelify_theloop_for_archive() {
 				$image = '';
 	     		$title_attribute = apply_filters( 'the_title', get_the_title( $post->ID ) );
 	     		$image .= '<figure class="post-featured-image">';
-	  			$image .= '<a href="' . get_permalink() . '" title="'.the_title( '', '', false ).'">';
-	  			$image .= get_the_post_thumbnail( $post->ID, 'featured', array( 'title' => esc_attr( $title_attribute ), 'alt' => esc_attr( $title_attribute ) ) ).'</a>';
+	  			$image .= '<a href="' . esc_url( get_permalink() ) . '" title="'.the_title_attribute( array( 'echo' => false ) ).'">';
+	  			$image .= get_the_post_thumbnail( $post->ID, 'travelify-featured', array( 'alt' => esc_attr( $title_attribute ) ) ).'</a>';
 	  			$image .= '</figure>';
 
-	  			echo $image;
+	  			echo $image; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped as it is built.
 	  		}
   			?>
 			<header class="entry-header">
@@ -148,7 +148,7 @@ function travelify_theloop_for_archive() {
 	             	<?php } ?>
     			</div><!-- .entry-meta -->
     			<?php
-    			echo '<a class="readmore" href="' . get_permalink() . '" title="'.the_title( '', '', false ).'">'.__( 'Read more', 'travelify' ).'</a>';
+    			echo '<a class="readmore" href="' . esc_url( get_permalink() ) . '" title="'.the_title_attribute( array( 'echo' => false ) ).'">' . esc_html__( 'Read more', 'travelify' ) . '</a>';
     			?>
     		</div>
 
@@ -163,7 +163,7 @@ function travelify_theloop_for_archive() {
 	}
 	else {
 		?>
-		<h1 class="entry-title"><?php _e( 'No Posts Found.', 'travelify' ); ?></h1>
+		<h2 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h2>
       <?php
    }
 }
@@ -190,9 +190,9 @@ function travelify_theloop_for_page() {
 			<?php do_action( 'travelify_before_post_header' ); ?>
 
 			<header class="entry-header">
-    			<h2 class="entry-title">
+    			<h1 class="entry-title">
     				<?php the_title(); ?>
-    			</h2><!-- .entry-title -->
+    			</h1><!-- .entry-title -->
   			</header>
 
   			<?php do_action( 'travelify_after_post_header' ); ?>
@@ -234,7 +234,7 @@ function travelify_theloop_for_page() {
 	}
 	else {
 		?>
-		<h1 class="entry-title"><?php _e( 'No Posts Found.', 'travelify' ); ?></h1>
+		<h2 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h2>
       <?php
    }
 }
@@ -261,9 +261,9 @@ function travelify_theloop_for_single() {
 			<?php do_action( 'travelify_before_post_header' ); ?>
 
 			<header class="entry-header">
-    			<h2 class="entry-title">
+    			<h1 class="entry-title">
     				<?php the_title(); ?>
-    			</h2><!-- .entry-title -->
+    			</h1><!-- .entry-title -->
   		</header>
 
   		<?php do_action( 'travelify_after_post_header' ); ?>
@@ -294,7 +294,7 @@ function travelify_theloop_for_single() {
 						if( !empty( $tag_list ) ) {
 							?>
 							<div class="tags">
-								<?php echo $tag_list; ?>
+								<?php echo wp_kses_post( $tag_list ); ?>
 							</div>
 							<?php
 						}
@@ -332,7 +332,7 @@ function travelify_theloop_for_single() {
 	}
 	else {
 		?>
-		<h1 class="entry-title"><?php _e( 'No Posts Found.', 'travelify' ); ?></h1>
+		<h2 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h2>
       <?php
    }
 }
@@ -383,7 +383,7 @@ function travelify_theloop_for_search() {
 	}
 	else {
 		?>
-		<h1 class="entry-title"><?php _e( 'No Posts Found.', 'travelify' ); ?></h1>
+		<h2 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h2>
       <?php
    }
 }
@@ -433,11 +433,11 @@ function travelify_theloop_for_template_blog_image_large() {
 				$image = '';
 	     		$title_attribute = apply_filters( 'the_title', get_the_title( $post->ID ) );
 	     		$image .= '<figure class="post-featured-image">';
-	  			$image .= '<a href="' . get_permalink() . '" title="'.the_title( '', '', false ).'">';
-	  			$image .= get_the_post_thumbnail( $post->ID, 'featured', array( 'title' => esc_attr( $title_attribute ), 'alt' => esc_attr( $title_attribute ) ) ).'</a>';
+	  			$image .= '<a href="' . esc_url( get_permalink() ) . '" title="'.the_title_attribute( array( 'echo' => false ) ).'">';
+	  			$image .= get_the_post_thumbnail( $post->ID, 'travelify-featured', array( 'alt' => esc_attr( $title_attribute ) ) ).'</a>';
 	  			$image .= '</figure>';
 
-	  			echo $image;
+	  			echo $image; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped as it is built.
 	  		}
   			?>
   			<header class="entry-header">
@@ -464,7 +464,7 @@ function travelify_theloop_for_template_blog_image_large() {
 	             	<?php } ?>
     			</div><!-- .entry-meta -->
     			<?php
-    			echo '<a class="readmore" href="' . get_permalink() . '" title="'.the_title( '', '', false ).'">'.__( 'Read more', 'travelify' ).'</a>';
+    			echo '<a class="readmore" href="' . esc_url( get_permalink() ) . '" title="'.the_title_attribute( array( 'echo' => false ) ).'">' . esc_html__( 'Read more', 'travelify' ) . '</a>';
     			?>
     		</div>
 
@@ -492,7 +492,7 @@ function travelify_theloop_for_template_blog_image_large() {
 	}
 	else {
 		?>
-		<h1 class="entry-title"><?php _e( 'No Posts Found.', 'travelify' ); ?></h1>
+		<h2 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h2>
       <?php
    }
    $wp_query = $temp_query;
@@ -549,11 +549,11 @@ function travelify_theloop_for_template_blog_image_medium() {
 				$image = '';
 	     		$title_attribute = apply_filters( 'the_title', get_the_title( $post->ID ) );
 	     		$image .= '<figure class="post-featured-image">';
-	  			$image .= '<a href="' . get_permalink() . '" title="'.the_title( '', '', false ).'">';
-	  			$image .= get_the_post_thumbnail( $post->ID, 'featured-medium', array( 'title' => esc_attr( $title_attribute ), 'alt' => esc_attr( $title_attribute ) ) ).'</a>';
+	  			$image .= '<a href="' . esc_url( get_permalink() ) . '" title="'.the_title_attribute( array( 'echo' => false ) ).'">';
+	  			$image .= get_the_post_thumbnail( $post->ID, 'travelify-featured-medium', array( 'alt' => esc_attr( $title_attribute ) ) ).'</a>';
 	  			$image .= '</figure>';
 
-	  			echo $image;
+	  			echo $image; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped as it is built.
 	  		}
   			?>
 
@@ -575,7 +575,7 @@ function travelify_theloop_for_template_blog_image_medium() {
 	             	<?php } ?>
     			</div><!-- .entry-meta -->
     			<?php
-    			echo '<a class="readmore" href="' . get_permalink() . '" title="'.the_title( '', '', false ).'">'.__( 'Read more', 'travelify' ).'</a>';
+    			echo '<a class="readmore" href="' . esc_url( get_permalink() ) . '" title="'.the_title_attribute( array( 'echo' => false ) ).'">' . esc_html__( 'Read more', 'travelify' ) . '</a>';
     			?>
     		</div>
 
@@ -602,7 +602,7 @@ function travelify_theloop_for_template_blog_image_medium() {
 	}
 	else {
 		?>
-		<h1 class="entry-title"><?php _e( 'No Posts Found.', 'travelify' ); ?></h1>
+		<h2 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h2>
       <?php
    }
    $wp_query = $temp_query;
@@ -713,7 +713,7 @@ function travelify_theloop_for_template_blog_full_content() {
 	}
 	else {
 		?>
-		<h1 class="entry-title"><?php _e( 'No Posts Found.', 'travelify' ); ?></h1>
+		<h2 class="entry-title"><?php esc_html_e( 'No Posts Found.', 'travelify' ); ?></h2>
       <?php
    }
    $wp_query = $temp_query;
@@ -805,7 +805,7 @@ function travelify_comment( $comment, $args, $depth ) {
 		// Display trackbacks differently than normal comments.
 	?>
 	<li <?php comment_class(); ?> id="comment-<?php comment_ID(); ?>">
-		<p><?php _e( 'Pingback:', 'travelify' ); ?> <?php comment_author_link(); ?> <?php edit_comment_link( __( '(Edit)', 'travelify' ), '<span class="edit-link">', '</span>' ); ?></p>
+		<p><?php esc_html_e( 'Pingback:', 'travelify' ); ?> <?php comment_author_link(); ?> <?php edit_comment_link( __( '(Edit)', 'travelify' ), '<span class="edit-link">', '</span>' ); ?></p>
 	<?php
 			break;
 		default :
@@ -820,9 +820,9 @@ function travelify_comment( $comment, $args, $depth ) {
 					printf( '<cite class="fn">%1$s %2$s</cite>',
 						get_comment_author_link(),
 						// If current post author is also comment author, make it known visually.
-						( $comment->user_id === $post->post_author ) ? '<span> ' . __( 'Post author', 'travelify' ) . '</span>' : ''
+						( (int) $comment->user_id === (int) $post->post_author ) ? '<span> ' . esc_html__( 'Post author', 'travelify' ) . '</span>' : ''
 					);
-					printf( '<a href="%1$s"><time pubdate datetime="%2$s">%3$s</time></a>',
+					printf( '<a href="%1$s"><time datetime="%2$s">%3$s</time></a>',
 						esc_url( get_comment_link( $comment->comment_ID ) ),
 						get_comment_time( 'c' ),
 						/* translators: 1: date, 2: time */
@@ -832,7 +832,7 @@ function travelify_comment( $comment, $args, $depth ) {
 			</header><!-- .comment-meta -->
 
 			<?php if ( '0' == $comment->comment_approved ) : ?>
-				<p class="comment-awaiting-moderation"><?php _e( 'Your comment is awaiting moderation.', 'travelify' ); ?></p>
+				<p class="comment-awaiting-moderation"><?php esc_html_e( 'Your comment is awaiting moderation.', 'travelify' ); ?></p>
 			<?php endif; ?>
 
 			<section class="comment-content comment">

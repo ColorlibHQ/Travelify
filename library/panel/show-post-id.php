@@ -46,8 +46,9 @@ function travelify_column( $cols ) {
  * This function shows the ID of the respective post.
  */
 function travelify_value( $column_name, $id ) {
-	if ( 'travelify-column-id' == $column_name )
-		echo $id;
+	if ( 'travelify-column-id' === $column_name ) {
+		echo absint( $id );
+	}
 }
 
 /**

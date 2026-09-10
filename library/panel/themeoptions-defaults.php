@@ -21,7 +21,6 @@ $travelify_theme_options_defaults = array(
 	'transition_duration'  => '1',
 	'social_facebook'      => '',
 	'social_twitter'       => '',
-	'social_googleplus'    => '',
 	'social_pinterest'     => '',
 	'social_vimeo'         => '',
 	'social_linkedin'      => '',

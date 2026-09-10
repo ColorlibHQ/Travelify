@@ -8,7 +8,7 @@
 /**
  * Travelify is available for translation.
  * Add your files into library/languages/ directory.
- * @see http://codex.wordpress.org/Function_Reference/load_theme_textdomain
+ * @see https://developer.wordpress.org/reference/functions/load_theme_textdomain/
  */
 
 load_theme_textdomain( 'travelify', get_template_directory() . '/languages' );
