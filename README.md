@@ -1,4 +1,19 @@
-# [Travelify](https://colorlib.com/wp/themes/travelify/)
+# Travelify — Free Responsive WordPress Travel & Blog Theme
+
+[![Version](https://img.shields.io/badge/version-3.1.1-blue.svg)](https://github.com/ColorlibHQ/Travelify/releases)
+[![WordPress](https://img.shields.io/badge/WordPress-6.0%20–%207.0-21759b.svg)](https://wordpress.org/themes/travelify/)
+[![PHP](https://img.shields.io/badge/PHP-7.4%20–%208.5-777bb4.svg)](https://www.php.net/)
+[![License](https://img.shields.io/badge/license-GPL--2.0--or--later-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
+[![Downloads](https://img.shields.io/wordpress/theme/dt/travelify.svg)](https://wordpress.org/themes/travelify/)
+
+[![The Travelify homepage: the full-width featured post slider above the blog list and sidebar](.github/screenshot-desktop.jpg)](https://colorlibhub.com/travelify/)
+
+<p align="center">
+  <a href="https://colorlibhub.com/travelify/"><strong>Live demo</strong></a> ·
+  <a href="https://wordpress.org/themes/travelify/"><strong>Download from WordPress.org</strong></a> ·
+  <a href="https://colorlib.com/wp/support/travelify/"><strong>Documentation</strong></a> ·
+  <a href="https://colorlibsupport.com/"><strong>Support forum</strong></a>
+</p>
 
 ## Description
 
@@ -8,11 +23,17 @@ The theme's own JavaScript runs without jQuery, the Ubuntu webfont is bundled ra
 
 **Requires WordPress 6.0 or later and PHP 7.4 or later. Tested up to WordPress 7.0 and PHP 8.5.**
 
+<p align="center">
+  <img src=".github/screenshot-mobile.jpg" width="300" alt="Travelify on a phone with the navigation open, showing menu items and expandable sub-menus">
+  <br>
+  <em>The mobile navigation, rebuilt in 3.1.0: a real toggle button, expandable sub-menus,<br>Escape to close and a no-JavaScript fallback.</em>
+</p>
+
 ## More info
 More about this theme you can find in the [following link](https://colorlib.com/wp/themes/travelify/).
 
 ## Demo
-Travelify preview [is available here](https://colorlib.com/travelify/)
+Travelify preview [is available here](https://colorlibhub.com/travelify/)
 
 ## Installation
 
