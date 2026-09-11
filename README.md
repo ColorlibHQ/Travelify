@@ -82,6 +82,9 @@ Unless otherwise specified, all the theme files, scripts and images are licensed
 
 ## Change Log
 
+**= 3.1.2 =**
+* Corrected the capitalisation of "WordPress" in a code comment. WordPress.org's automated theme scan reports any spelling other than that exact form as a required fix
+
 **= 3.1.1 =**
 * Fixed the front page breaking where an older copy of the theme's stylesheet is still being served -- by a child theme carrying its own copy, or by a minify, cache or CDN layer holding a cached one. The slider and the mobile menu were relying on CSS rules that only exist in 3.1.0, so with an out-of-date stylesheet every slide rendered at full height down the page and the menu button did nothing. Both now set the layout they depend on from JavaScript, as the slider did before 3.1.0. If you saw this, clearing your minify or page cache will also fix it on 3.1.0
 * Corrected the 3.1.0 changelog: the pre-3.1.0 mobile menu was not missing. TinyNav shipped bundled inside the minified functions.min.js and did build a drop-down; the standalone tinynav.js in library/js was unused, which is what led to the mistaken claim. The 3.1.0 menu is still a replacement for that drop-down, not a first one

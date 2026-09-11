@@ -485,7 +485,7 @@ function travelify_options_register_theme_customizer($wp_customize)
         }
 
     /* Other options Section */
-    // We don't need this section as there is and Additional CSS default by wordpress
+    // We don't need this section as there is and Additional CSS default by WordPress
     // @todo: delete commented lines after we migrated the Custom CSS code into WP default Additional CSS
     // @todo: but first lets see if there are any problems
     /*$wp_customize->add_section('travelify_others_options', array(
